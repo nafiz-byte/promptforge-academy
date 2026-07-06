@@ -1,0 +1,978 @@
+{
+  "modules": [
+    {
+      "id": "foundation",
+      "title": "Module 1: Foundation",
+      "icon": "🟢",
+      "description": "Learn the basics of AI and how it works",
+      "lessons": [
+        {
+          "id": "what-is-ai",
+          "title": "What is AI?",
+          "order": 1,
+          "content": {
+            "heading": "What is Artificial Intelligence?",
+            "body": "**AI (Artificial Intelligence)** is technology that enables computers to learn, understand, and make decisions like humans.\n\n**Real-world examples:**\n- Google Search results → AI\n- YouTube/Netflix recommendations → AI\n- ChatGPT, Claude conversations → AI\n- Voice assistants (Siri, Alexa) → AI\n\n**How does AI work?**\nAI learns patterns from massive amounts of data. Just like you learned to recognize a cat by seeing thousands of cat pictures, AI learns the same way.",
+            "note": "💡 Remember: AI isn't magic — it's math and data working together.",
+            "exercise": {
+              "title": "Try it yourself",
+              "description": "Ask the AI to explain itself in simple terms:",
+              "defaultPrompt": "Explain what you are and how you work, in simple terms for a complete beginner."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What does AI stand for?",
+              "options": ["Automated Intelligence", "Artificial Intelligence", "Advanced Internet", "Automatic Information"],
+              "correct": 1
+            },
+            {
+              "question": "How does AI primarily learn?",
+              "options": ["By guessing randomly", "By learning patterns from data", "By following fixed rules only", "By copying humans exactly"],
+              "correct": 1
+            },
+            {
+              "question": "Which of these is an example of AI?",
+              "options": ["A calculator", "Netflix recommendations", "A simple text file", "A basic calendar"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "what-is-llm",
+          "title": "What is an LLM?",
+          "order": 2,
+          "content": {
+            "heading": "Large Language Models (LLMs)",
+            "body": "**LLM (Large Language Model)** is a type of AI trained on massive amounts of text to understand and generate human language.\n\n**Popular LLMs:**\n- **GPT (OpenAI)** — powers ChatGPT\n- **Claude (Anthropic)** — known for safety and reasoning\n- **Gemini (Google)** — integrated with Google services\n- **Llama (Meta)** — open source model\n\n**What makes them 'Large'?**\nThey're trained on billions of words from books, websites, and articles — giving them broad knowledge across countless topics.\n\n**How do they generate text?**\nLLMs predict the next word based on context — doing this billions of times per second creates human-like responses.",
+            "note": "💡 LLMs predict the next word based on patterns — but they do it so well it feels like real understanding.",
+            "exercise": {
+              "title": "Try it yourself",
+              "description": "Ask about the differences between LLMs:",
+              "defaultPrompt": "What's the difference between GPT, Claude, and Gemini? Explain in a simple comparison table."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What does LLM stand for?",
+              "options": ["Large Language Model", "Long Learning Machine", "Linear Logic Model", "Limited Language Machine"],
+              "correct": 0
+            },
+            {
+              "question": "Which company created Claude?",
+              "options": ["OpenAI", "Google", "Anthropic", "Microsoft"],
+              "correct": 2
+            },
+            {
+              "question": "LLMs are trained on:",
+              "options": ["A small fixed dataset", "Only images", "Massive amounts of text", "Only numbers"],
+              "correct": 2
+            }
+          ]
+        },
+        {
+          "id": "what-is-prompt",
+          "title": "What is a Prompt?",
+          "order": 3,
+          "content": {
+            "heading": "Prompt — Your Instructions to AI",
+            "body": "A **prompt** is what you write or say to an AI to get a response.\n\nJust like a good recipe leads to good food, a good prompt leads to a good AI response.\n\n**A good prompt includes:**\n- What you want (the task)\n- Who it's for (role/context)\n- How you want it (format)\n- Any constraints (length, tone)",
+            "examples": [
+              {"type": "bad", "label": "Weak Prompt", "text": "Give me a recipe"},
+              {"type": "good", "label": "Strong Prompt", "text": "I'm a beginner cook. Give me a simple 5-minute fried egg recipe with step-by-step instructions and exact measurements."}
+            ],
+            "note": "💡 The more specific your prompt, the more accurate the response.",
+            "exercise": {
+              "title": "Try it yourself",
+              "description": "Improve this weak prompt and send it:",
+              "defaultPrompt": "Give me a recipe"
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is a prompt?",
+              "options": ["A type of computer", "Instructions you give to AI", "A programming language", "An AI company"],
+              "correct": 1
+            },
+            {
+              "question": "Which prompt is more effective?",
+              "options": ["A vague one-word request", "A specific, detailed request", "No prompt at all", "A prompt in random language"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "tokens-context",
+          "title": "Tokens & Context Window",
+          "order": 4,
+          "content": {
+            "heading": "Tokens & Context Window Explained",
+            "body": "**What is a Token?**\nAI doesn't read word by word — it reads in chunks called tokens. 1 token ≈ 4 characters or ¾ of a word.\n\n**Examples:**\n- 'Hello' = 1 token\n- 'PromptForge' = 2-3 tokens\n- 100 words ≈ 75 tokens\n\n**What is a Context Window?**\nThe context window is how much text an AI can 'see' at once — like its short-term memory. If your conversation is too long, the AI may forget earlier parts.\n\n**Why does this matter?**\n- Longer prompts cost more tokens\n- Very long conversations may lose context\n- Keep your prompts clear and concise",
+            "note": "💡 Think of context window as the AI's working memory — it can only hold so much at once.",
+            "exercise": {
+              "title": "Try it yourself",
+              "description": "Ask about tokens in your own words:",
+              "defaultPrompt": "Explain what tokens are in AI language models. Give a simple analogy to help me understand."
+            }
+          },
+          "quiz": [
+            {
+              "question": "Approximately how many tokens is 100 words?",
+              "options": ["100 tokens", "75 tokens", "200 tokens", "50 tokens"],
+              "correct": 1
+            },
+            {
+              "question": "What is a context window?",
+              "options": ["A computer screen", "How much text AI can process at once", "A type of prompt", "An AI model"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "ai-use-cases",
+          "title": "What Can AI Do?",
+          "order": 5,
+          "content": {
+            "heading": "Real-World AI Use Cases",
+            "body": "AI can help you with an enormous range of tasks. Here's what's possible:\n\n**Writing & Content:**\n- Drafting emails, essays, reports\n- Writing code and debugging\n- Creating marketing copy\n\n**Research & Learning:**\n- Summarizing long documents\n- Explaining complex topics\n- Answering questions instantly\n\n**Creative Work:**\n- Brainstorming ideas\n- Writing stories or scripts\n- Generating images (with image AI)\n\n**Business & Productivity:**\n- Analyzing data\n- Creating business plans\n- Automating repetitive tasks\n\n**What AI cannot do:**\n- Access real-time internet (usually)\n- Guarantee 100% accuracy\n- Replace human judgment entirely",
+            "note": "💡 AI is a powerful tool — but it works best when you know exactly what to ask for.",
+            "exercise": {
+              "title": "Try it yourself",
+              "description": "Ask AI to help with something from your real life:",
+              "defaultPrompt": "I'm a student preparing for exams. Give me 5 creative ways I can use AI to study more effectively."
+            }
+          },
+          "quiz": [
+            {
+              "question": "Which of these can AI help with?",
+              "options": ["Only writing", "Only coding", "Writing, research, creativity, and business tasks", "Only answering factual questions"],
+              "correct": 2
+            },
+            {
+              "question": "What is a limitation of most AI chatbots?",
+              "options": ["They can't write", "They don't have real-time internet access", "They only speak English", "They can't answer questions"],
+              "correct": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompt-basics",
+      "title": "Module 2: Prompt Basics",
+      "icon": "🔵",
+      "description": "Master the fundamentals of effective prompting",
+      "lessons": [
+        {
+          "id": "be-specific",
+          "title": "Being Specific",
+          "order": 1,
+          "content": {
+            "heading": "Specificity — The Key to Better Prompts",
+            "body": "AI can't read your mind. Whatever you say, that's exactly what it understands.\n\n**Add these elements to be specific:**\n\n**1. Quantity**\n'Give some tips' → 'Give exactly 5 tips'\n\n**2. Audience**\n'Explain it' → 'Explain it to a 10-year-old'\n\n**3. Format**\n'Write it' → 'Write it as numbered bullet points'\n\n**4. Length**\n'Briefly' or 'In detail' — AI doesn't know how much you need.\n\n**5. Tone**\n'Professional', 'Casual', 'Friendly' — tell AI how to sound.",
+            "note": "💡 Try answering: Who? What? How? How much? — in your prompt.",
+            "exercise": {
+              "title": "Practice",
+              "description": "Send this specific prompt and see the difference:",
+              "defaultPrompt": "Give me exactly 5 tips for learning Python programming — for complete beginners, each tip in 2 sentences with a practical example."
+            }
+          },
+          "quiz": [
+            {
+              "question": "Why should you be specific in prompts?",
+              "options": ["AI gets confused by long text", "AI cannot infer unstated details", "It makes the prompt longer", "It's not necessary"],
+              "correct": 1
+            },
+            {
+              "question": "Which makes a prompt more specific?",
+              "options": ["Adding quantity and format", "Making it shorter", "Removing context", "Using vague words"],
+              "correct": 0
+            }
+          ]
+        },
+        {
+          "id": "give-role",
+          "title": "Assigning Roles",
+          "order": 2,
+          "content": {
+            "heading": "Giving AI a Role (Persona)",
+            "body": "When you assign AI a specific role, it responds from that perspective.\n\n**Formula:**\n`You are a [expert/role]. [Your question.]`\n\n**Why it works:**\nAI adjusts its vocabulary, depth, and style based on the role you give it.",
+            "examples": [
+              {"type": "bad", "label": "No Role", "text": "How do I start a business?"},
+              {"type": "good", "label": "With Role", "text": "You are a 15-year experienced entrepreneur. I just graduated college with only $500. What are 3 practical small businesses I can start this week?"}
+            ],
+            "body2": "**Useful roles to try:**\n- 'You are an experienced teacher'\n- 'You are a senior software engineer'\n- 'You are a financial advisor'\n- 'You are a creative writing coach'\n- 'You are a strict editor who values clarity'",
+            "note": "💡 Roles make responses more focused, relevant, and expert-level.",
+            "exercise": {
+              "title": "Try it",
+              "description": "Ask AI something while assigning it a role:",
+              "defaultPrompt": "You are an experienced resume expert. I'm a fresh graduate with no work experience. What should I include in my resume to stand out?"
+            }
+          },
+          "quiz": [
+            {
+              "question": "What's the benefit of assigning a role to AI?",
+              "options": ["It makes responses random", "It focuses the response from that expert perspective", "It slows down the AI", "It has no effect"],
+              "correct": 1
+            },
+            {
+              "question": "What is the correct formula for role assignment?",
+              "options": ["Ask a question first, then add role", "You are a [role]. [Your question.]", "Just mention the role at the end", "Roles don't work in prompts"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "add-context",
+          "title": "Adding Context",
+          "order": 3,
+          "content": {
+            "heading": "Context — Help AI Understand Your Situation",
+            "body": "AI doesn't know you personally. The more context you provide, the better it can help.\n\n**Context to include:**\n- Who you are / what you do\n- Your goal or objective\n- Current problem or challenge\n- What kind of answer you want\n- Any constraints (time, budget, skill level)",
+            "examples": [
+              {"type": "bad", "label": "No Context", "text": "Help me learn English"},
+              {"type": "good", "label": "With Context", "text": "I'm a medical student taking IELTS in 6 months. My current score is 5.5, and I'm weakest in Writing Task 2. I can study 30 minutes daily. Give me a structured improvement plan."}
+            ],
+            "note": "💡 More context = more useful, personalized responses.",
+            "exercise": {
+              "title": "Write with your own context",
+              "description": "Write a prompt with your real situation:",
+              "defaultPrompt": "I am a university student studying Computer Science. I need to learn web development for an internship in 3 months. I know basic HTML/CSS. Give me a step-by-step learning roadmap."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What should you include for better context?",
+              "options": ["Random unrelated facts", "Your background, goal, and constraints", "Nothing extra", "Only the question"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "output-format",
+          "title": "Output Format",
+          "order": 4,
+          "content": {
+            "heading": "Specify How You Want the Output",
+            "body": "AI can respond in many formats. Telling it what you want makes the response directly usable.\n\n**Common formats:**\n- **List:** 'Give it as numbered bullet points'\n- **Table:** 'Create a comparison table with columns for X, Y, Z'\n- **Steps:** 'Explain step by step'\n- **Summary:** 'Summarize in exactly 3 sentences'\n- **JSON:** 'Respond in JSON format'\n- **Email:** 'Write it as a professional email'",
+            "examples": [
+              {"type": "good", "label": "Table Format", "text": "Compare Python, JavaScript, and Java in a table with 4 columns: Language, Best For, Learning Difficulty (1-10), Average Salary."},
+              {"type": "good", "label": "Step Format", "text": "Explain how to create a GitHub repository, step by step, for a complete beginner who has never used Git."}
+            ],
+            "note": "💡 Specifying format makes the response immediately usable without editing.",
+            "exercise": {
+              "title": "Try a specific format",
+              "description": "Create a comparison table:",
+              "defaultPrompt": "Compare three popular AI chatbots (ChatGPT, Claude, Gemini) in a table with columns: Name, Best Use Case, Free Tier, Strengths, Weaknesses."
+            }
+          },
+          "quiz": [
+            {
+              "question": "Which is a valid output format request?",
+              "options": ["'Give it as bullet points'", "'Make it long'", "'Use big words'", "'Repeat yourself'"],
+              "correct": 0
+            },
+            {
+              "question": "Why specify output format?",
+              "options": ["To confuse AI", "To make the response immediately usable", "To make prompts longer", "It has no benefit"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "dos-donts",
+          "title": "Prompt Do's and Don'ts",
+          "order": 5,
+          "content": {
+            "heading": "Prompt Engineering: Do's and Don'ts",
+            "body": "**DO's ✅**\n- Be clear and specific about what you want\n- Provide relevant context and background\n- Specify the output format you need\n- Assign a role when appropriate\n- Break complex tasks into smaller steps\n- Use examples to show what you want\n\n**DON'Ts ❌**\n- Don't be vague or assume AI knows your situation\n- Don't ask multiple unrelated questions in one prompt\n- Don't forget to specify the audience or tone\n- Don't accept the first response if it's not quite right\n- Don't use ambiguous words like 'good', 'nice', 'better'\n- Don't write prompts longer than necessary",
+            "note": "💡 If AI gives a wrong answer, it's usually a prompt problem — not an AI problem.",
+            "exercise": {
+              "title": "Fix this bad prompt",
+              "description": "Rewrite this weak prompt to make it strong:",
+              "defaultPrompt": "Write something good about technology for my presentation."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What should you do if AI gives a wrong answer?",
+              "options": ["Give up", "Assume AI is broken", "Refine your prompt and try again", "Switch to a different topic"],
+              "correct": 2
+            },
+            {
+              "question": "Which is a DON'T in prompt engineering?",
+              "options": ["Being specific", "Providing context", "Asking multiple unrelated questions at once", "Specifying format"],
+              "correct": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intermediate",
+      "title": "Module 3: Intermediate Prompting",
+      "icon": "🟡",
+      "description": "Level up with advanced prompting strategies",
+      "lessons": [
+        {
+          "id": "chain-of-thought",
+          "title": "Chain of Thought",
+          "order": 1,
+          "content": {
+            "heading": "Chain of Thought — Make AI Think Step by Step",
+            "body": "**Chain of Thought (CoT)** is a technique where you ask AI to show its reasoning process before giving the final answer.\n\n**Why it works:**\nWhen AI 'thinks out loud', it catches its own mistakes and produces more accurate answers — especially for complex problems.\n\n**How to use it:**\nSimply add phrases like:\n- 'Think step by step'\n- 'Show your reasoning'\n- 'Walk me through your thinking'\n- 'Explain how you arrived at this answer'",
+            "examples": [
+              {"type": "bad", "label": "Without CoT", "text": "If a train travels 120km in 2 hours, then 180km in 3 hours, what is the average speed?"},
+              {"type": "good", "label": "With CoT", "text": "If a train travels 120km in 2 hours, then 180km in 3 hours, what is the average speed? Think step by step and show all calculations."}
+            ],
+            "note": "💡 Chain of Thought is especially powerful for math, logic, and complex reasoning tasks.",
+            "exercise": {
+              "title": "Try Chain of Thought",
+              "description": "Ask a reasoning question with step-by-step instruction:",
+              "defaultPrompt": "I have a business idea for a mobile app. Think step by step and help me analyze: Is it a good idea? Consider market demand, competition, technical feasibility, and monetization."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What does Chain of Thought prompting do?",
+              "options": ["Makes AI faster", "Makes AI show its reasoning process", "Makes responses shorter", "Assigns a role to AI"],
+              "correct": 1
+            },
+            {
+              "question": "When is Chain of Thought most useful?",
+              "options": ["Simple questions", "Creative writing only", "Complex reasoning and math problems", "Casual conversation"],
+              "correct": 2
+            }
+          ]
+        },
+        {
+          "id": "few-shot",
+          "title": "Few-Shot Prompting",
+          "order": 2,
+          "content": {
+            "heading": "Few-Shot Prompting — Teach by Example",
+            "body": "**Few-shot prompting** means giving AI examples of what you want before making your actual request.\n\n**Types:**\n- **Zero-shot:** No examples, just instructions\n- **One-shot:** One example given\n- **Few-shot:** 2-5 examples given\n\n**Why use examples?**\nExamples show AI the exact pattern, tone, and format you want — much more powerful than describing it in words.",
+            "examples": [
+              {"type": "bad", "label": "Zero-shot (vague)", "text": "Write product descriptions for my store."},
+              {"type": "good", "label": "Few-shot (with examples)", "text": "Write product descriptions in this style:\n\nExample 1:\nProduct: Coffee Mug\nDescription: Start your morning right. This ceramic mug keeps your coffee hot for 2 hours.\n\nExample 2:\nProduct: Notebook\nDescription: Your ideas deserve better. Premium paper, lay-flat binding, built to last.\n\nNow write a description for: Wireless Headphones"}
+            ],
+            "note": "💡 The more relevant examples you give, the more accurate the output pattern.",
+            "exercise": {
+              "title": "Try Few-Shot",
+              "description": "Give examples and let AI follow the pattern:",
+              "defaultPrompt": "Classify these reviews as Positive or Negative:\n\nExample: 'Amazing product, works perfectly!' → Positive\nExample: 'Broke after one day, terrible quality' → Negative\n\nNow classify: 'Decent quality but arrived late and packaging was damaged.'"
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is few-shot prompting?",
+              "options": ["Asking multiple questions", "Giving AI examples before the actual request", "Using short prompts only", "Limiting AI responses"],
+              "correct": 1
+            },
+            {
+              "question": "What is zero-shot prompting?",
+              "options": ["Giving no instructions at all", "Asking AI without any examples", "Giving 10+ examples", "A type of AI model"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "iteration",
+          "title": "Iteration & Refinement",
+          "order": 3,
+          "content": {
+            "heading": "Iteration — Refine Until It's Perfect",
+            "body": "Getting the perfect response is rarely a one-shot process. Professional prompt engineers iterate — they refine their prompts based on outputs.\n\n**Effective follow-up techniques:**\n\n**Make it simpler:**\n'Explain this in simpler language, like I'm 12 years old'\n\n**Go deeper:**\n'Expand on point number 3 with more detail and examples'\n\n**Change format:**\n'Convert this to a bullet point list'\n\n**Adjust tone:**\n'Rewrite this in a more formal/casual tone'\n\n**Fix mistakes:**\n'That's not quite right — [correct info]. Please rewrite with this in mind.'\n\n**Shorten:**\n'Summarize this in exactly 3 sentences'",
+            "note": "💡 Great prompt engineering is a conversation, not a single message.",
+            "exercise": {
+              "title": "Practice Iteration",
+              "description": "First run the prompt, then try a follow-up:",
+              "defaultPrompt": "Explain machine learning in simple terms."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is prompt iteration?",
+              "options": ["Writing the longest prompt possible", "Refining prompts based on AI output", "Copying prompts from others", "Asking the same question repeatedly"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "temperature",
+          "title": "Creativity & Temperature",
+          "order": 4,
+          "content": {
+            "heading": "Controlling AI Creativity",
+            "body": "**Temperature** is a setting that controls how creative or conservative AI responses are.\n\n**Low temperature (precise):**\n- More predictable, factual, consistent\n- Best for: coding, math, data extraction, factual Q&A\n\n**High temperature (creative):**\n- More varied, creative, surprising\n- Best for: brainstorming, storytelling, creative writing\n\n**You can control this in your prompt without the setting:**\n\nFor precise responses, say:\n'Give me a factual, accurate answer with no speculation.'\n\nFor creative responses, say:\n'Be creative, think outside the box, give unexpected ideas.'",
+            "note": "💡 Match the creativity level to your task — facts need precision, ideas need creativity.",
+            "exercise": {
+              "title": "Try both modes",
+              "description": "Ask for creative vs factual responses:",
+              "defaultPrompt": "Give me 10 unique business ideas for a student with no capital. Be extremely creative and think completely outside the box — the more unusual the better."
+            }
+          },
+          "quiz": [
+            {
+              "question": "When should you want low temperature (precise) responses?",
+              "options": ["Creative writing", "Brainstorming", "Coding and factual questions", "Storytelling"],
+              "correct": 2
+            }
+          ]
+        },
+        {
+          "id": "prompt-chaining",
+          "title": "Prompt Chaining",
+          "order": 5,
+          "content": {
+            "heading": "Prompt Chaining — Break Big Tasks Down",
+            "body": "**Prompt chaining** means breaking a large complex task into smaller sequential prompts, where each builds on the last.\n\n**Why it works:**\nAI focuses better on smaller tasks. Chaining ensures each step is done well before moving forward.\n\n**Example — Writing a Business Plan:**\n\nStep 1: 'Generate 5 business ideas for the food industry'\n\nStep 2: 'Take idea #3. What are the top 5 risks?'\n\nStep 3: 'Now write an executive summary for this business'\n\nStep 4: 'Create a 6-month action plan with milestones'",
+            "note": "💡 Complex task = chain of small prompts. Each response becomes context for the next.",
+            "exercise": {
+              "title": "Try Chaining",
+              "description": "Start the first step of a chain:",
+              "defaultPrompt": "I want to start a YouTube channel about technology. Step 1: Generate 10 unique channel name ideas that are catchy, memorable, and available as a username."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is prompt chaining?",
+              "options": ["Writing very long prompts", "Breaking tasks into sequential smaller prompts", "Repeating the same prompt", "Combining multiple AI tools"],
+              "correct": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Module 4: Advanced Technique",
+      "icon": "🟠",
+      "description": "Professional-grade prompting strategies",
+      "lessons": [
+        {
+          "id": "system-prompts",
+          "title": "System Prompts",
+          "order": 1,
+          "content": {
+            "heading": "System Prompts — Setting AI's Behavior",
+            "body": "A **system prompt** is a hidden instruction that sets the overall behavior, personality, and rules for an AI before the conversation begins.\n\n**What system prompts define:**\n- AI's role and personality\n- What topics to cover or avoid\n- Response style and format\n- Language and tone\n\n**Example system prompt:**\n'You are a helpful customer service agent for TechCorp. Only answer questions about our products. Always be polite and professional. If you don't know something, say so and offer to escalate.'\n\n**You can simulate this in conversation:**\nStart your message with 'For this entire conversation, you are...' and AI will maintain that behavior.",
+            "note": "💡 System prompts are how companies customize AI for their specific use cases.",
+            "exercise": {
+              "title": "Create a System Prompt",
+              "description": "Set AI's behavior for a specific use case:",
+              "defaultPrompt": "For this entire conversation, you are a strict but encouraging coding teacher. Only speak about programming concepts. When I make mistakes, correct them firmly but kindly. Start by asking what I want to learn today."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What does a system prompt do?",
+              "options": ["Generates code", "Sets AI's overall behavior and personality", "Speeds up AI responses", "Translates languages"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "react-prompting",
+          "title": "ReAct Prompting",
+          "order": 2,
+          "content": {
+            "heading": "ReAct Prompting — Reason + Act",
+            "body": "**ReAct** stands for **Reasoning + Acting**. It's a technique where you ask AI to alternate between thinking (reasoning) and doing (acting).\n\n**The pattern:**\n1. **Thought:** AI reasons about what to do\n2. **Action:** AI takes a step\n3. **Observation:** AI notes what happened\n4. **Repeat** until task is complete\n\n**How to prompt for ReAct:**\n'For each step, first write your Thought (reasoning), then your Action (what you'll do), then your Observation (what you learned).'\n\n**Best used for:**\n- Complex problem solving\n- Multi-step research tasks\n- Debugging code\n- Planning complex projects",
+            "note": "💡 ReAct helps AI solve problems more systematically, like a detective building a case.",
+            "exercise": {
+              "title": "Try ReAct",
+              "description": "Ask AI to reason through a problem:",
+              "defaultPrompt": "Use ReAct format (Thought/Action/Observation) to help me plan how to start a freelance graphic design business. Show your reasoning at each step."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What does ReAct stand for?",
+              "options": ["Real Action", "Reasoning + Acting", "Recursive Analysis", "Response + Context"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "self-consistency",
+          "title": "Self-Consistency",
+          "order": 3,
+          "content": {
+            "heading": "Self-Consistency — Get Multiple Answers",
+            "body": "**Self-consistency** is a technique where you ask AI to solve the same problem multiple times using different approaches, then pick the most common answer.\n\n**Why it works:**\nJust like asking multiple experts and taking the majority opinion, multiple reasoning paths reduce errors.\n\n**How to use it:**\n'Solve this problem in 3 different ways. Then tell me which answer appears most consistently.'\n\n**Best for:**\n- Important decisions\n- Complex math or logic\n- When accuracy matters most\n- Fact-checking important information",
+            "note": "💡 More reasoning paths = higher confidence in the answer.",
+            "exercise": {
+              "title": "Try Self-Consistency",
+              "description": "Ask AI to approach a problem from multiple angles:",
+              "defaultPrompt": "Should I learn Python or JavaScript first as a beginner programmer? Reason through this question from 3 different perspectives: career opportunities, ease of learning, and practical projects. Then give your final recommendation."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is self-consistency in prompting?",
+              "options": ["AI always giving the same answer", "Solving a problem multiple ways and finding the consistent answer", "Checking AI for errors", "Using the same prompt repeatedly"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "tree-of-thought",
+          "title": "Tree of Thought",
+          "order": 4,
+          "content": {
+            "heading": "Tree of Thought — Explore Multiple Paths",
+            "body": "**Tree of Thought (ToT)** extends Chain of Thought by exploring multiple reasoning branches simultaneously — like a decision tree.\n\n**How it works:**\nInstead of one linear reasoning path, AI explores several branches and evaluates which path leads to the best solution.\n\n**Prompt template:**\n'Imagine 3 different experts are solving this problem. Each expert writes their first step. Then all experts review each other's steps. Continue this process until the best solution emerges.'\n\n**Best for:**\n- Creative problem solving\n- Strategic planning\n- Complex decisions with many variables\n- Situations where multiple solutions are possible",
+            "note": "💡 Tree of Thought works best for problems where the path to the answer matters as much as the answer itself.",
+            "exercise": {
+              "title": "Try Tree of Thought",
+              "description": "Explore multiple solution paths:",
+              "defaultPrompt": "Three experts (a marketing expert, a tech expert, and a finance expert) are evaluating my idea to build a food delivery app in Bangladesh. Each expert shares their biggest concern. Then they discuss solutions. Show this entire conversation."
+            }
+          },
+          "quiz": [
+            {
+              "question": "How is Tree of Thought different from Chain of Thought?",
+              "options": ["It's faster", "It explores multiple reasoning branches simultaneously", "It uses shorter prompts", "It requires more examples"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "ai-ethics",
+          "title": "AI Ethics & Limitations",
+          "order": 5,
+          "content": {
+            "heading": "AI Ethics & Knowing the Limits",
+            "body": "Being a skilled prompt engineer also means understanding AI's ethical boundaries and limitations.\n\n**AI Limitations:**\n- Can hallucinate (generate false information confidently)\n- Has a training cutoff date\n- Can be biased based on training data\n- Cannot access real-time information\n- Cannot verify its own accuracy\n\n**Ethical Considerations:**\n- Don't use AI to generate harmful, misleading, or illegal content\n- Always verify important information from authoritative sources\n- Don't use AI to plagiarize or misrepresent work as your own\n- Be transparent when content is AI-generated\n\n**How to reduce hallucinations:**\n- Ask AI to cite sources or admit uncertainty\n- Use phrases like 'If you're not sure, say so'\n- Verify critical information independently",
+            "note": "💡 A skilled AI user knows when to trust AI and when to verify independently.",
+            "exercise": {
+              "title": "Test AI Honesty",
+              "description": "Ask AI to acknowledge its limitations:",
+              "defaultPrompt": "What is the current population of Bangladesh? If you're not 100% sure of the exact current figure, please say so and explain your uncertainty. Also tell me when your training data ends."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is AI 'hallucination'?",
+              "options": ["AI seeing images", "AI generating false information confidently", "AI being too creative", "AI refusing to answer"],
+              "correct": 1
+            },
+            {
+              "question": "How can you reduce AI hallucinations?",
+              "options": ["Ask longer questions", "Tell AI to admit uncertainty", "Use shorter prompts", "Switch AI models"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "jailbreak-safety",
+          "title": "Jailbreak & Safety",
+          "order": 6,
+          "content": {
+            "heading": "Understanding Jailbreaks & Staying Safe",
+            "body": "**What is a jailbreak?**\nA jailbreak is an attempt to bypass AI's safety guidelines through clever prompting — getting AI to do something it's designed to refuse.\n\n**Why AI has guardrails:**\nAI companies add safety guidelines to prevent harmful content generation. These protect users and society.\n\n**Why you should NOT jailbreak:**\n- Violates terms of service\n- Can expose you to harmful content\n- Creates misinformation risks\n- May have legal consequences\n\n**Instead, use these legitimate techniques:**\n- Frame requests constructively\n- Provide clear legitimate context\n- If AI refuses, rephrase — don't try to trick it\n- Use the right AI tool for the right task",
+            "note": "💡 The best prompt engineers work with AI's design, not against it.",
+            "exercise": {
+              "title": "Legitimate Reframing",
+              "description": "Practice rephrasing a sensitive request legitimately:",
+              "defaultPrompt": "I'm writing a cybersecurity awareness article for my company. Explain the most common types of phishing attacks so employees can recognize and avoid them. Focus on awareness and protection."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is an AI jailbreak?",
+              "options": ["A security feature", "Bypassing AI safety guidelines through prompting", "A type of AI model", "A prompt technique"],
+              "correct": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "real-world",
+      "title": "Module 5: Real-World Use Cases",
+      "icon": "🔴",
+      "description": "Apply AI to real tasks that matter",
+      "lessons": [
+        {
+          "id": "cv-writing",
+          "title": "AI for CV & Cover Letter",
+          "order": 1,
+          "content": {
+            "heading": "Using AI to Write a Standout CV",
+            "body": "AI can dramatically improve your CV and cover letters — but only if you prompt it correctly.\n\n**Step 1: Give AI your information**\nList your education, experience, skills, and target job.\n\n**Step 2: Specify the job**\nPaste the job description so AI can tailor your CV.\n\n**Step 3: Request specific improvements**\nAsk AI to use action verbs, quantify achievements, and match keywords.\n\n**Power verbs to request:**\nAchieved, Delivered, Led, Built, Increased, Reduced, Managed, Developed",
+            "note": "💡 Always review AI-generated CVs carefully — personalize and verify every claim.",
+            "exercise": {
+              "title": "Try CV Writing",
+              "description": "Use AI to improve a CV bullet point:",
+              "defaultPrompt": "You are an expert CV writer. Improve these weak CV bullet points using strong action verbs and quantified achievements:\n\n1. 'Helped with social media'\n2. 'Did customer service'\n3. 'Worked on website'\n\nRewrite each one to be impressive and specific."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What should you provide AI to write a tailored CV?",
+              "options": ["Just your name", "Your information AND the job description", "Only your skills", "Just your education"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "business-planning",
+          "title": "AI for Business Planning",
+          "order": 2,
+          "content": {
+            "heading": "Using AI to Build a Business Plan",
+            "body": "AI can help you create comprehensive business plans in a fraction of the time.\n\n**Use AI for:**\n- Market research and competitor analysis\n- SWOT analysis\n- Financial projections\n- Marketing strategy\n- Go-to-market planning\n\n**Best prompting approach:**\nUse prompt chaining — one section at a time:\n\n1. Executive Summary\n2. Market Analysis\n3. Product/Service Description\n4. Marketing Strategy\n5. Financial Projections\n6. Operations Plan",
+            "note": "💡 Use AI as a thinking partner for business planning, not as the final authority. Always validate with real data.",
+            "exercise": {
+              "title": "Business Plan Exercise",
+              "description": "Start building a business plan section:",
+              "defaultPrompt": "I want to start a tutoring service for HSC students in Dhaka, Bangladesh. Do a SWOT analysis for this business idea. Be specific to the Bangladeshi market context."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is the best approach for using AI for business planning?",
+              "options": ["Ask for everything in one prompt", "Use prompt chaining, one section at a time", "Only ask for financial data", "Avoid using AI for business"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "coding-with-ai",
+          "title": "AI for Coding",
+          "order": 3,
+          "content": {
+            "heading": "Using AI as a Coding Partner",
+            "body": "AI is one of the most powerful coding tools available — if you know how to prompt it.\n\n**What AI can help with:**\n- Writing code from scratch\n- Debugging errors\n- Explaining code\n- Refactoring and optimization\n- Writing documentation\n- Code review\n\n**Best practices for coding prompts:**\n- Specify the programming language\n- Describe the exact problem or feature\n- Share relevant existing code\n- Ask for explanations alongside code\n- Request error handling and edge cases",
+            "examples": [
+              {"type": "bad", "label": "Weak", "text": "Write a login function"},
+              {"type": "good", "label": "Strong", "text": "Write a Python FastAPI endpoint for user login that accepts email and password, validates against a SQLite database using SQLAlchemy, returns a JWT token on success, and returns appropriate error messages on failure. Include comments explaining each step."}
+            ],
+            "note": "💡 Always review and test AI-generated code before using it in production.",
+            "exercise": {
+              "title": "Coding Exercise",
+              "description": "Ask AI to write specific code:",
+              "defaultPrompt": "Write a Python function that takes a list of student names and scores, and returns a dictionary with 'passed' and 'failed' lists (passing score is 50). Include docstring and handle edge cases. Show example usage."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What should you include when asking AI to write code?",
+              "options": ["Just the task", "Programming language, exact requirements, and context", "Only the function name", "Just the desired output"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "content-writing",
+          "title": "AI for Content Writing",
+          "order": 4,
+          "content": {
+            "heading": "Using AI for Content & Copywriting",
+            "body": "AI can dramatically speed up content creation — from blog posts to social media captions.\n\n**Content types AI excels at:**\n- Blog posts and articles\n- Social media captions\n- Product descriptions\n- Email newsletters\n- Ad copy\n- Video scripts\n\n**Key prompting tips for content:**\n- Define your target audience clearly\n- Specify tone (professional, casual, humorous)\n- Give the word count or length\n- Provide key points to include\n- Share your brand voice if you have one",
+            "note": "💡 Use AI as a first draft tool — always add your personal voice and edit the output.",
+            "exercise": {
+              "title": "Content Writing Exercise",
+              "description": "Write a social media post with AI:",
+              "defaultPrompt": "Write 3 LinkedIn post options about the importance of learning AI skills in 2025. Target audience: fresh graduates in Bangladesh. Tone: inspiring and practical. Each post should be under 150 words and end with a call to action."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is AI best used for in content writing?",
+              "options": ["Final published content with no edits", "First drafts that you then refine", "Replacing all human writers", "Only writing headlines"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "research-summarization",
+          "title": "AI for Research",
+          "order": 5,
+          "content": {
+            "heading": "Using AI for Research & Summarization",
+            "body": "AI can be a powerful research assistant — helping you understand complex topics quickly.\n\n**Research tasks AI helps with:**\n- Explaining complex concepts simply\n- Summarizing long documents\n- Comparing multiple perspectives\n- Generating research questions\n- Creating literature review outlines\n\n**Summarization prompt formula:**\n'Summarize [topic/text] in [format] for [audience] in [length]. Focus on [key aspects].'\n\n**Important warning:**\nAI may not have the latest information and can make factual errors. Always verify important facts from authoritative sources.",
+            "note": "💡 Use AI to understand concepts, but cite original sources in academic work.",
+            "exercise": {
+              "title": "Research Exercise",
+              "description": "Use AI to research a topic:",
+              "defaultPrompt": "I'm writing a university essay on climate change. Summarize the 5 most important scientific facts about climate change for a non-expert audience. Present as numbered points, each with a one-sentence explanation. Note any areas of scientific uncertainty."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What should you always do with AI research output?",
+              "options": ["Trust it completely", "Submit it directly", "Verify important facts from authoritative sources", "Never use it"],
+              "correct": 2
+            }
+          ]
+        },
+        {
+          "id": "email-communication",
+          "title": "AI for Email & Communication",
+          "order": 6,
+          "content": {
+            "heading": "Using AI to Write Better Emails",
+            "body": "AI can help you write clearer, more professional, and more effective emails.\n\n**Email types AI helps with:**\n- Professional cold emails\n- Follow-up emails\n- Complaint responses\n- Job application emails\n- Apology emails\n- Negotiation emails\n\n**Prompt formula for emails:**\n'Write a [tone] email to [recipient] about [topic]. Context: [situation]. Goal: [what you want to achieve]. Length: [short/medium/long]. Include [specific elements].'\n\n**Always specify:**\n- The relationship (boss, client, friend)\n- The desired outcome\n- The tone (formal, friendly, urgent)",
+            "note": "💡 AI-written emails should sound like you — always personalize before sending.",
+            "exercise": {
+              "title": "Email Writing Exercise",
+              "description": "Write a professional email with AI:",
+              "defaultPrompt": "Write a professional email requesting a 1-week deadline extension for a project. Context: I'm a freelancer, the client is understanding but professional. Reason: unexpected illness. Tone: apologetic but confident. Include: acknowledgment of the inconvenience, assurance of quality, new deadline proposal."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What should you always do with AI-written emails?",
+              "options": ["Send immediately", "Personalize before sending", "Use formal language only", "Never use AI for emails"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "data-analysis",
+          "title": "AI for Data Analysis",
+          "order": 7,
+          "content": {
+            "heading": "Using AI for Data Analysis",
+            "body": "AI can help you understand, interpret, and present data — even without technical expertise.\n\n**Data tasks AI helps with:**\n- Interpreting data patterns\n- Writing SQL queries\n- Creating data analysis plans\n- Suggesting visualizations\n- Writing data-driven reports\n- Explaining statistical concepts\n\n**Prompt approach for data:**\nDescribe your data clearly, then ask specific questions:\n'I have a dataset with columns: [list columns]. Here is a sample: [sample data]. Help me [specific task].'\n\n**Tip:** Paste small data samples directly into your prompt for AI to analyze.",
+            "note": "💡 AI can't access your files directly — paste data samples into the prompt for analysis.",
+            "exercise": {
+              "title": "Data Analysis Exercise",
+              "description": "Analyze sample data with AI:",
+              "defaultPrompt": "Analyze this sales data and identify key insights:\n\nMonth | Sales | Units | Region\nJan   | 45000 | 120   | North\nFeb   | 38000 | 98    | North\nMar   | 62000 | 156   | South\nApr   | 71000 | 189   | South\n\nWhat trends do you see? What would you recommend to the sales team?"
+            }
+          },
+          "quiz": [
+            {
+              "question": "How do you share data with AI for analysis?",
+              "options": ["Upload files directly", "Email the data", "Paste data samples into the prompt", "AI can access your computer"],
+              "correct": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ecosystem",
+      "title": "Module 6: AI Tools Ecosystem",
+      "icon": "⚫",
+      "description": "Navigate the AI landscape like a pro",
+      "lessons": [
+        {
+          "id": "gpt-vs-claude",
+          "title": "ChatGPT vs Claude vs Gemini",
+          "order": 1,
+          "content": {
+            "heading": "Choosing the Right AI Tool",
+            "body": "Not all AI tools are equal. Each has strengths and weaknesses.\n\n**ChatGPT (OpenAI)**\n- Best for: general tasks, plugins, image generation (DALL-E)\n- Strengths: most popular, huge ecosystem, code interpreter\n- Weaknesses: can be verbose, expensive at scale\n\n**Claude (Anthropic)**\n- Best for: long documents, nuanced writing, analysis\n- Strengths: large context window, honest about limitations\n- Weaknesses: less real-time data access\n\n**Gemini (Google)**\n- Best for: Google Workspace integration, real-time info\n- Strengths: connected to Google Search, free tier\n- Weaknesses: less consistent than competitors\n\n**Rule of thumb:**\nUse the tool that fits your specific task — don't be loyal to one.",
+            "note": "💡 Professional AI users switch between tools based on the task requirements.",
+            "exercise": {
+              "title": "Compare AI Tools",
+              "description": "Ask AI to help you choose:",
+              "defaultPrompt": "I'm a freelance content writer. I need to choose between ChatGPT, Claude, and Gemini for my daily work. Compare them specifically for content writing tasks. Which should I use for which type of content?"
+            }
+          },
+          "quiz": [
+            {
+              "question": "Which AI is known for its large context window and honest limitations?",
+              "options": ["ChatGPT", "Claude", "Gemini", "Llama"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "image-ai",
+          "title": "Image Generation AI",
+          "order": 2,
+          "content": {
+            "heading": "AI Image Generation — Prompting Visuals",
+            "body": "Image AI tools can create stunning visuals from text descriptions. Prompting for images is a skill in itself.\n\n**Popular image AI tools:**\n- **Midjourney** — highest quality, subscription-based\n- **DALL-E 3** — integrated with ChatGPT\n- **Stable Diffusion** — free, open source\n- **Adobe Firefly** — commercial-safe images\n\n**Image prompt formula:**\n[Subject] + [Style] + [Lighting] + [Mood] + [Technical specs]\n\n**Example:**\n'A young Bangladeshi entrepreneur at a laptop in a modern cafe, photorealistic, warm morning light, motivated and focused, 4K, cinematic'",
+            "note": "💡 More detail in image prompts = more accurate visual output.",
+            "exercise": {
+              "title": "Write an Image Prompt",
+              "description": "Practice writing a detailed image prompt:",
+              "defaultPrompt": "Help me write a detailed image generation prompt for: A futuristic classroom in Bangladesh where students are learning with AI. Use the formula: Subject + Style + Lighting + Mood + Technical specs. Give me 3 variations."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What makes a good image generation prompt?",
+              "options": ["One word description", "Detailed subject, style, lighting, mood, and specs", "Just the color scheme", "Only the style"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "ai-automation",
+          "title": "AI Automation Tools",
+          "order": 3,
+          "content": {
+            "heading": "Automating Work with AI Tools",
+            "body": "AI automation tools let you connect apps and create automated workflows without coding.\n\n**Popular automation platforms:**\n- **Zapier** — connects 5000+ apps with AI\n- **Make (Integromat)** — visual workflow builder\n- **n8n** — open source automation\n\n**Example automations:**\n- When you get an email → AI summarizes it → sends to Slack\n- When a form is submitted → AI writes a personalized response\n- Daily → AI generates a social media post and schedules it\n\n**No-code AI tools:**\n- **Notion AI** — smart notes and documents\n- **Grammarly** — AI writing assistant\n- **Otter.ai** — AI meeting transcription",
+            "note": "💡 AI automation can save hours of repetitive work every week.",
+            "exercise": {
+              "title": "Design an Automation",
+              "description": "Use AI to plan an automation:",
+              "defaultPrompt": "I run a small online store. Help me design an AI automation workflow that: takes customer reviews → analyzes sentiment → drafts a personalized response → flags negative reviews for human review. Describe each step and what tool could handle it."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What do AI automation tools like Zapier help with?",
+              "options": ["Writing code only", "Connecting apps and creating automated workflows", "Image generation", "Video editing"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "api-basics",
+          "title": "Using AI APIs",
+          "order": 4,
+          "content": {
+            "heading": "AI APIs — Integrating AI into Your Products",
+            "body": "An **API (Application Programming Interface)** lets you integrate AI capabilities directly into your own applications.\n\n**Why use APIs:**\n- Build custom AI-powered products\n- Automate at scale\n- Create unique user experiences\n- Control costs more precisely\n\n**Popular AI APIs:**\n- **Anthropic API** — Claude models\n- **OpenAI API** — GPT models\n- **Google AI API** — Gemini models\n- **Hugging Face** — open source models\n\n**A simple API call:**\nYou send: your prompt + API key\nYou receive: AI's response as text\n\nThis is exactly how PromptForge Academy's AI grader works!",
+            "note": "💡 You don't need to be an expert programmer to start using AI APIs — many tutorials exist for beginners.",
+            "exercise": {
+              "title": "API Concepts",
+              "description": "Learn about APIs through AI:",
+              "defaultPrompt": "Explain how to use the Claude API as if teaching a beginner programmer. What do I need to get started? What does a basic API call look like? Keep it simple with a Python code example."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What does an AI API allow you to do?",
+              "options": ["Only chat with AI", "Integrate AI into your own applications", "Access AI for free", "Train your own AI model"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "future-of-ai",
+          "title": "Future of AI",
+          "order": 5,
+          "content": {
+            "heading": "The Future of AI — What's Coming",
+            "body": "AI is evolving at an unprecedented pace. Here's what's on the horizon:\n\n**Near-term trends (1-2 years):**\n- Multimodal AI (text + image + audio + video together)\n- AI agents that take actions autonomously\n- More personalized AI assistants\n- AI in every productivity app\n\n**Medium-term (3-5 years):**\n- AI that can independently conduct research\n- More accurate and reliable models\n- Widespread AI regulation\n- New job categories centered around AI\n\n**What this means for you:**\n- Prompt engineering will become a foundational skill\n- AI literacy will be as important as computer literacy\n- Human creativity + AI capability = the winning combination\n- Learning to work with AI now gives you a massive advantage",
+            "note": "💡 The best time to learn AI was yesterday. The second best time is today.",
+            "exercise": {
+              "title": "Future Thinking",
+              "description": "Explore the future of AI:",
+              "defaultPrompt": "How will AI change the job market in Bangladesh over the next 5 years? Which industries will be most affected? What skills should young Bangladeshis develop today to stay relevant? Be specific and realistic."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is 'multimodal AI'?",
+              "options": ["AI that speaks multiple languages", "AI that handles text, image, audio, and video together", "Multiple AI models working together", "AI with multiple personalities"],
+              "correct": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capstone",
+      "title": "Module 7: Capstone Projects",
+      "icon": "🏆",
+      "description": "Apply everything you've learned in real projects",
+      "lessons": [
+        {
+          "id": "project-ai-assistant",
+          "title": "Project: Build Your AI Assistant",
+          "order": 1,
+          "content": {
+            "heading": "Project 1 — Design Your Personal AI Assistant",
+            "body": "In this project, you'll design a complete personal AI assistant using everything you've learned.\n\n**Your mission:**\nCreate a system prompt + prompt library for a personal AI assistant tailored to your specific life and work.\n\n**Step 1: Define your assistant's purpose**\nWhat will it help you with daily? (studying, writing, coding, business?)\n\n**Step 2: Write the system prompt**\nDescribe its personality, expertise, and behavior rules.\n\n**Step 3: Create 10 power prompts**\nWrite 10 prompts you'll use daily with this assistant.\n\n**Step 4: Test and refine**\nTest each prompt, iterate based on results.",
+            "note": "💡 A well-designed personal AI assistant can save you 2-3 hours every day.",
+            "exercise": {
+              "title": "Build Your Assistant",
+              "description": "Start by designing your system prompt:",
+              "defaultPrompt": "I want to build a personal AI assistant for a university student studying Computer Science. Help me write a detailed system prompt that makes the AI: act as a study partner, help with coding, explain concepts simply, keep me accountable, and encourage me when I'm stuck. The assistant should be friendly but focused."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is the first step in building a personal AI assistant?",
+              "options": ["Write 100 prompts", "Define the assistant's purpose", "Choose an AI model", "Learn to code"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "project-business",
+          "title": "Project: AI Business Validator",
+          "order": 2,
+          "content": {
+            "heading": "Project 2 — Validate a Business Idea with AI",
+            "body": "Use AI to do a complete business validation analysis for a real idea you have.\n\n**The full validation chain:**\n\n**Prompt 1:** Generate and refine the business concept\n**Prompt 2:** Identify target market and customer persona\n**Prompt 3:** Analyze 5 competitors\n**Prompt 4:** SWOT analysis\n**Prompt 5:** Revenue model options\n**Prompt 6:** First 30-day action plan\n**Prompt 7:** Key risks and mitigation strategies\n\n**Deliverable:**\nA complete business validation report created through 7 chained prompts.",
+            "note": "💡 This project demonstrates the full power of prompt chaining for complex, real-world tasks.",
+            "exercise": {
+              "title": "Start Validation",
+              "description": "Begin the business validation chain:",
+              "defaultPrompt": "I have a business idea: an online platform connecting university students with part-time job opportunities in Bangladesh. Start the validation by: 1) Refining and improving the concept, 2) Identifying the primary target market with a detailed customer persona, 3) Estimating market size in Bangladesh."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What prompting technique does this project primarily use?",
+              "options": ["Few-shot prompting", "Prompt chaining", "Chain of thought only", "Role assignment only"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "project-prompt-library",
+          "title": "Project: Build a Prompt Library",
+          "order": 3,
+          "content": {
+            "heading": "Project 3 — Build Your Personal Prompt Library",
+            "body": "A prompt library is a collection of tested, refined prompts for tasks you do regularly.\n\n**Why build a prompt library:**\n- Save time on repeated tasks\n- Ensure consistent quality\n- Build on what works\n- Share with your team\n\n**Categories to include:**\n- Work/Study prompts\n- Writing & editing prompts\n- Research prompts\n- Creative prompts\n- Analysis prompts\n- Personal productivity prompts\n\n**Library format:**\n[Task Name] | [Prompt] | [Best Model] | [Notes]\n\n**Goal:** Create 20 high-quality prompts across 5 categories.",
+            "note": "💡 Your prompt library becomes more valuable over time as you refine and add to it.",
+            "exercise": {
+              "title": "Start Your Library",
+              "description": "Create your first prompt library category:",
+              "defaultPrompt": "Help me build a 'Writing & Editing' section of my prompt library. Create 5 high-quality prompts for: 1) Making writing more concise, 2) Improving clarity, 3) Checking grammar and style, 4) Making text more engaging, 5) Adapting writing for different audiences. Format as a table."
+            }
+          },
+          "quiz": [
+            {
+              "question": "What is a prompt library?",
+              "options": ["An AI model", "A collection of tested prompts for regular tasks", "A book about AI", "A type of AI tool"],
+              "correct": 1
+            }
+          ]
+        },
+        {
+          "id": "final-assessment",
+          "title": "Final Assessment",
+          "order": 4,
+          "content": {
+            "heading": "Final Assessment — Prove Your Skills",
+            "body": "Congratulations on reaching the final lesson! 🎉\n\n**What you've mastered:**\n- ✅ AI fundamentals and how LLMs work\n- ✅ Basic prompting: specificity, roles, context, format\n- ✅ Intermediate: Chain of Thought, Few-shot, Iteration\n- ✅ Advanced: System prompts, ReAct, Tree of Thought\n- ✅ Real-world applications across multiple domains\n- ✅ AI tools ecosystem and future trends\n- ✅ Three complete capstone projects\n\n**Your final challenge:**\nCombine ALL techniques learned into one master prompt that solves a real problem you face.\n\n**Certificate:** Complete this lesson to unlock your PromptForge Academy certificate!",
+            "note": "💡 You've gone from beginner to professional prompt engineer. The journey continues — AI keeps evolving, and so should you.",
+            "exercise": {
+              "title": "Master Challenge",
+              "description": "Create your ultimate prompt combining all techniques:",
+              "defaultPrompt": "Using ALL prompt engineering techniques (role, context, chain of thought, few-shot, output format, iteration instructions), write the most powerful prompt you can for this task: Help me prepare for a job interview at a top tech company in Bangladesh. I'm a fresh Computer Science graduate."
+            }
+          },
+          "quiz": [
+            {
+              "question": "How many modules does PromptForge Academy have?",
+              "options": ["5", "6", "7", "8"],
+              "correct": 2
+            },
+            {
+              "question": "What do you receive after completing all lessons?",
+              "options": ["A job offer", "A completion certificate", "Free API access", "A physical diploma"],
+              "correct": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

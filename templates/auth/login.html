@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Login — PromptForge Academy{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center px-6 py-12">
+    <div class="w-full max-w-md">
+
+        <!-- Logo -->
+        <div class="text-center mb-8 animate-fade-up">
+            <div class="inline-flex items-center gap-2 mb-2">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-lg">⚒️</div>
+                <span class="font-display font-bold text-xl">PromptForge <span class="text-primary">Academy</span></span>
+            </div>
+        </div>
+
+        <!-- Card -->
+        <div class="glass rounded-3xl p-8 animate-scale-in">
+            <h1 class="font-display font-bold text-2xl mb-2 text-center">Welcome Back</h1>
+            <p class="text-gray-400 text-sm text-center mb-8">Log in with your registered mobile number</p>
+
+            <!-- Phone Input -->
+            <div class="mb-6">
+                <label class="block text-xs text-gray-400 mb-2 font-medium">Mobile Number</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">🇧🇩 +88</span>
+                    <input
+                        type="tel"
+                        id="phoneInput"
+                        placeholder="01XXXXXXXXX"
+                        maxlength="11"
+                        class="w-full pl-20 pr-4 py-4 rounded-xl bg-cardbg/80 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all"
+                    >
+                </div>
+                <p id="phoneError" class="text-secondary text-xs mt-2 hidden"></p>
+            </div>
+
+            <!-- No charge notice -->
+            <div class="bg-accent/10 border border-accent/20 rounded-xl p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <span class="text-lg">✅</span>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        No charge for returning users — just verify with OTP to continue learning.
+                    </p>
+                </div>
+            </div>
+
+            <button id="sendOtpBtn" onclick="requestOTP()" class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-secondary font-display font-bold hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5">
+                Send OTP →
+            </button>
+
+            <p class="text-center text-xs text-gray-500 mt-6">
+                New here?
+                <a href="/register" class="text-primary hover:underline">Create an account</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function validatePhone(phone) {
+    phone = phone.trim();
+    if (phone.length !== 11) return false;
+    if (!phone.startsWith('016') && !phone.startsWith('018')) return false;
+    if (!/^\d+$/.test(phone)) return false;
+    return true;
+}
+
+async function requestOTP() {
+    const phoneInput = document.getElementById('phoneInput');
+    const errorEl = document.getElementById('phoneError');
+    const btn = document.getElementById('sendOtpBtn');
+    const phone = phoneInput.value.trim();
+
+    errorEl.classList.add('hidden');
+
+    if (!validatePhone(phone)) {
+        errorEl.textContent = 'Enter a valid Robi (018) or Airtel (016) number';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+
+    setButtonLoading(btn, true, 'Sending OTP...');
+
+    const fullPhone = '880' + phone.substring(1);
+    const result = await apiCall('/api/auth/request-otp', 'POST', { phone: fullPhone });
+
+    setButtonLoading(btn, false);
+
+    if (result.success && result.data.success) {
+        showToast(result.data.message, 'success');
+        setTimeout(() => {
+            window.location.href = `/verify-otp?phone=${fullPhone}`;
+        }, 800);
+    } else {
+        showToast(result.data?.message || result.error || 'Failed to send OTP', 'error');
+    }
+}
+
+document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') requestOTP();
+});
+</script>
+{% endblock %}

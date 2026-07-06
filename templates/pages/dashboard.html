@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — PromptForge Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+  }
+  * { box-sizing: border-box; }
+  .nb-body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 36px;
+  }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .animate-fade-up { opacity:0; animation: fadeUp 0.55s ease forwards; }
+  .delay-1{animation-delay:.06s} .delay-2{animation-delay:.12s} .delay-3{animation-delay:.18s} .delay-4{animation-delay:.24s}
+
+  .nb-nav { display:flex; justify-content:space-between; align-items:center; padding: 20px 40px; background:var(--bg); border-bottom: 1px solid var(--line); }
+  .nb-logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:19px; color:var(--ink); text-decoration:none; letter-spacing:-0.02em; }
+  .nb-logo-academy { color: #8C3A24; }
+  .nb-nav-right { display:flex; align-items:center; gap:16px; }
+  .nb-streak { display:flex; align-items:center; gap:6px; font-weight:700; font-size:13px; background:var(--bg2); padding:7px 14px; border-radius:20px; border:1.5px solid var(--line); }
+  .nb-btn-outline { background:#fff; color:var(--ink); border:2px solid var(--ink); padding:8px 18px; text-decoration:none; border-radius:8px; font-weight:600; font-size:13px; }
+
+  .nb-container { max-width: 980px; margin: 0 auto; padding: 40px 40px 70px; }
+
+  .nb-welcome { margin-bottom: 32px; }
+  .nb-welcome-title { font-weight:800; font-size:30px; letter-spacing:-0.01em; margin-bottom:6px; }
+  .nb-welcome-sub { color:var(--muted); font-size:14px; }
+
+  .nb-stats-row { display:grid; grid-template-columns: repeat(4,1fr); gap:16px; margin-bottom: 40px; }
+  .nb-stat-card {
+    background:#fff; border:1.5px solid var(--ink); border-radius:12px;
+    padding: 18px; box-shadow: 4px 4px 0 var(--line);
+    transform: rotate(var(--r,0deg));
+  }
+  .nb-stat-card:nth-child(1){ --r:-0.6deg; }
+  .nb-stat-card:nth-child(2){ --r:0.4deg; }
+  .nb-stat-card:nth-child(3){ --r:-0.3deg; }
+  .nb-stat-card:nth-child(4){ --r:0.5deg; }
+  .nb-stat-icon { font-size:22px; margin-bottom:8px; }
+  .nb-stat-num { font-weight:800; font-size:26px; letter-spacing:-0.01em; }
+  .nb-stat-label { font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; font-weight:600; margin-top:2px; }
+
+  .nb-progress-bar-wrap { background: var(--bg2); border-radius: 20px; height: 10px; overflow:hidden; border:1px solid var(--line); }
+  .nb-progress-bar-fill { height:100%; background: var(--marker); border-radius:20px; transition: width 0.6s ease; }
+
+  .nb-section-label { display:flex; align-items:center; gap:8px; font-weight:700; font-style:italic; font-size:14px; color:var(--marker); margin-bottom:16px; }
+  .nb-section-label::before { content:''; width:20px; height:2px; background:var(--marker2); display:inline-block; }
+
+  .nb-module-list { display:flex; flex-direction:column; gap:12px; margin-bottom: 44px; }
+  .nb-module-card {
+    background:#fff; border:1.5px solid var(--ink); border-radius:12px;
+    padding: 18px 22px; display:flex; align-items:center; gap:16px;
+    box-shadow:3px 3px 0 var(--line); text-decoration:none; color:var(--ink);
+    border-left: 6px solid var(--mc, var(--marker));
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .nb-module-card:hover { transform: translateX(3px); box-shadow:5px 5px 0 var(--line); }
+  .nb-module-card:nth-child(1){ --mc:#2D5C3F; }
+  .nb-module-card:nth-child(2){ --mc:#2D6E8B; }
+  .nb-module-card:nth-child(3){ --mc:#C2A23E; }
+  .nb-module-card:nth-child(4){ --mc:#C25B3E; }
+  .nb-module-card:nth-child(5){ --mc:#A33E3E; }
+  .nb-module-card:nth-child(6){ --mc:#3E3E3E; }
+  .nb-module-card:nth-child(7){ --mc:#8B5E2D; }
+  .nb-mod-icon { font-size:24px; flex-shrink:0; }
+  .nb-mod-text { flex:1; min-width:0; }
+  .nb-mod-title { font-weight:700; font-size:15px; }
+  .nb-mod-progress-row { display:flex; align-items:center; gap:10px; margin-top:8px; }
+  .nb-mod-bar { flex:1; max-width:160px; }
+  .nb-mod-count { font-size:12px; color:var(--muted); font-weight:600; white-space:nowrap; }
+  .nb-mod-arrow { font-size:18px; color:var(--mc, var(--marker)); flex-shrink:0; }
+
+  .nb-bottom-grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom: 30px; }
+  .nb-action-card {
+    background:#fff; border:1.5px solid var(--ink); border-radius:12px;
+    padding: 22px; box-shadow: 4px 4px 0 var(--line);
+    text-decoration:none; color:var(--ink);
+    display:flex; align-items:center; gap:14px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .nb-action-card:hover { transform: translateY(-3px); box-shadow: 6px 6px 0 var(--line); }
+  .nb-action-icon {
+    width:46px; height:46px; border-radius:50%; background:var(--bg2);
+    border: 2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    font-size:20px; flex-shrink:0;
+  }
+  .nb-action-title { font-weight:700; font-size:14.5px; }
+  .nb-action-desc { font-size:12px; color:var(--muted); margin-top:2px; }
+
+  .nb-cert-banner {
+    background: var(--bg2); border: 2px dashed var(--marker); border-radius:12px;
+    padding: 18px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    margin-bottom: 16px;
+  }
+  .nb-cert-text { font-size:13px; color:var(--ink); }
+  .nb-cert-text strong { color: var(--marker); }
+  .nb-cert-btn {
+    background:var(--marker); color:#fff; padding:9px 18px; border-radius:8px;
+    text-decoration:none; font-weight:700; font-size:13px;
+    box-shadow: 2px 2px 0 var(--ink); white-space:nowrap;
+  }
+  .nb-cert-btn.disabled { background:#ccc; box-shadow:none; pointer-events:none; }
+
+  @media (max-width: 800px) {
+    .nb-stats-row { grid-template-columns: repeat(2,1fr); }
+    .nb-bottom-grid { grid-template-columns: 1fr; }
+    .nb-container { padding: 28px 20px 50px; }
+    .nb-nav { padding: 16px 20px; }
+    .nb-mod-bar { max-width: 90px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+<nav class="nb-nav">
+  <a href="/" class="nb-logo">📓 PromptForge<span class="nb-logo-academy">Academy</span></a>
+  <div class="nb-nav-right">
+    <div class="nb-streak">🔥 {{ user.streak }} day streak</div>
+    <div class="nb-streak">⭐ {{ user.xp }} XP</div>
+  </div>
+</nav>
+
+<div class="nb-container">
+
+  <div class="nb-welcome animate-fade-up">
+    <div class="nb-welcome-title">{% if user.name %}Welcome back, {{ user.name }} 👋{% else %}Welcome back 👋{% endif %}</div>
+    <div class="nb-welcome-sub">{{ completed_count }} of {{ total_lessons }} lessons complete — keep going.</div>
+  </div>
+
+  <div class="nb-stats-row">
+    <div class="nb-stat-card animate-fade-up delay-1">
+      <div class="nb-stat-icon">📚</div>
+      <div class="nb-stat-num">{{ completed_count }}/{{ total_lessons }}</div>
+      <div class="nb-stat-label">Lessons Done</div>
+    </div>
+    <div class="nb-stat-card animate-fade-up delay-2">
+      <div class="nb-stat-icon">⭐</div>
+      <div class="nb-stat-num">{{ user.xp }}</div>
+      <div class="nb-stat-label">Total XP</div>
+    </div>
+    <div class="nb-stat-card animate-fade-up delay-3">
+      <div class="nb-stat-icon">🔥</div>
+      <div class="nb-stat-num">{{ user.streak }}</div>
+      <div class="nb-stat-label">Day Streak</div>
+    </div>
+    <div class="nb-stat-card animate-fade-up delay-4">
+      <div class="nb-stat-icon">📈</div>
+      <div class="nb-stat-num">{{ overall_percent }}%</div>
+      <div class="nb-stat-label">Overall Progress</div>
+    </div>
+  </div>
+
+  {% if completed_count >= total_lessons %}
+  <div class="nb-cert-banner animate-fade-up">
+    <div class="nb-cert-text">🏆 <strong>All modules complete!</strong> Your certificate is ready to download.</div>
+    <a href="/certificate" class="nb-cert-btn">Download Certificate →</a>
+  </div>
+  {% endif %}
+
+  <div class="nb-section-label">your modules</div>
+  <div class="nb-module-list">
+    {% for mod in modules_progress %}
+    <a href="/lesson/{{ mod.id }}" class="nb-module-card animate-fade-up">
+      <div class="nb-mod-icon">{{ mod.icon }}</div>
+      <div class="nb-mod-text">
+        <div class="nb-mod-title">{{ mod.title }}</div>
+        <div class="nb-mod-progress-row">
+          <div class="nb-progress-bar-wrap nb-mod-bar">
+            <div class="nb-progress-bar-fill" style="width: {{ mod.percent }}%;"></div>
+          </div>
+          <div class="nb-mod-count">{{ mod.completed }}/{{ mod.total }} lessons</div>
+        </div>
+      </div>
+      <div class="nb-mod-arrow">→</div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="nb-section-label">quick links</div>
+  <div class="nb-bottom-grid">
+    <a href="/leaderboard" class="nb-action-card animate-fade-up">
+      <div class="nb-action-icon">🏆</div>
+      <div>
+        <div class="nb-action-title">Leaderboard</div>
+        <div class="nb-action-desc">See how you rank against others</div>
+      </div>
+    </a>
+    <a href="{% if completed_count >= total_lessons %}/certificate{% else %}#{% endif %}" class="nb-action-card animate-fade-up" {% if completed_count < total_lessons %}style="opacity:0.55; pointer-events:none;"{% endif %}>
+      <div class="nb-action-icon">📜</div>
+      <div>
+        <div class="nb-action-title">Certificate</div>
+        <div class="nb-action-desc">{% if completed_count >= total_lessons %}Download your certificate{% else %}Complete all lessons to unlock{% endif %}</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+</div>
+{% endblock %}

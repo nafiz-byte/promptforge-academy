@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+
+{% block title %}PromptForge Academy — Forge Your AI Future{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  .nb-body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .hand { font-weight: 700; font-style: italic; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up { opacity: 0; animation: fadeUp 0.7s ease forwards; }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .animate-scale-in { opacity: 0; animation: scaleIn 0.4s ease forwards; }
+
+  .delay-1 { animation-delay: 0.08s; }
+  .delay-2 { animation-delay: 0.16s; }
+  .delay-3 { animation-delay: 0.24s; }
+  .delay-4 { animation-delay: 0.32s; }
+  .delay-5 { animation-delay: 0.4s; }
+  .delay-6 { animation-delay: 0.48s; }
+  .delay-7 { animation-delay: 0.56s; }
+
+  .nb-nav {
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 20px 40px; position:relative; z-index:30;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .nb-logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:19px; color:var(--ink); text-decoration:none; letter-spacing:-0.02em; }
+  .nb-logo-academy { color: #8C3A24; }
+  .nb-nav-links { display:flex; gap:26px; align-items:center; font-size:14px; }
+  .nb-btn {
+    background: var(--marker); color:white; padding:10px 20px;
+    text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;
+    box-shadow: 3px 3px 0 var(--ink); display:inline-block;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .nb-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+  .nb-btn:active { transform: translate(0,0); box-shadow: 2px 2px 0 var(--ink); }
+
+  .nb-split { display:flex; flex-direction: row; flex: 1; min-height: 0; }
+  .nb-col-left {
+    width: 60%; padding: 48px 56px 40px;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 36px; background-color: var(--bg); position: relative;
+  }
+  .nb-col-right {
+    width: 40%; background: var(--bg2); border-left: 1px solid var(--line);
+    padding: 48px 44px 40px; display:flex; flex-direction:column; gap: 44px;
+  }
+  @media (min-width: 1000px) {
+    .nb-col-right { position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow-y: auto; }
+  }
+
+  .nb-hero { position:relative; max-width: 640px; }
+  .nb-tape {
+    display:inline-block; background: rgba(194,91,62,0.16); padding:5px 16px;
+    transform: rotate(-2deg); font-weight:700; font-style:italic; font-size:14px;
+    color: var(--marker2); border-radius: 3px; margin-bottom: 26px;
+  }
+  .nb-hero-title { font-weight:800; letter-spacing:-0.015em; font-size: clamp(32px, 3.4vw, 46px); line-height:1.18; margin: 0 0 20px; }
+  .nb-circle { position:relative; display:inline-block; color: var(--marker2); }
+  .nb-circle::after {
+    content:''; position:absolute; left:-7px; right:-7px; top:-9px; bottom:-5px;
+    border: 3px solid var(--marker2); border-radius: 50% 50% 48% 52% / 55% 50% 50% 45%;
+    transform: rotate(-1deg);
+  }
+  .nb-hero-sub { color:var(--muted); font-size:16px; max-width:480px; margin-bottom:28px; line-height:1.65; }
+  .nb-hero-ctas { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .nb-arrow-note { font-weight:600; font-style:italic; font-size:13px; color:var(--marker); display:flex; align-items:center; gap:6px; }
+
+  .nb-grid3 { margin: 44px 0; display:grid; grid-template-columns: repeat(3,1fr); gap:18px; max-width: 640px; }
+  .nb-sticky {
+    background:#fff; border:1.5px solid var(--ink); border-radius:10px;
+    padding:18px; box-shadow: 4px 4px 0 var(--line);
+    transform: rotate(var(--r,0deg)); transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative;
+  }
+  .nb-sticky::before {
+    content:''; position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+    width:12px; height:12px; border-radius:50%; background: var(--marker2); box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+  }
+  .nb-sticky:hover { transform: rotate(0deg) translateY(-3px); box-shadow: 6px 6px 0 var(--line); }
+  .nb-sticky:nth-child(1){ --r:-1.2deg; }
+  .nb-sticky:nth-child(2){ --r:0.8deg; }
+  .nb-sticky:nth-child(3){ --r:-0.5deg; }
+  .nb-sticky-num { font-weight:800; font-size:24px; color:var(--marker2); }
+  .nb-sticky-title { font-weight:700; margin: 6px 0 4px; font-size:14px; }
+  .nb-sticky-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+
+  .nb-section { max-width: 640px; padding: 0 0 56px; }
+  .nb-section-label { display:flex; align-items:center; gap:8px; font-weight:700; font-style:italic; font-size:14px; color:var(--marker); margin-bottom:8px; }
+  .nb-section-label::before { content:''; width:20px; height:2px; background:var(--marker2); display:inline-block; }
+  .nb-section-title { font-weight:800; letter-spacing:-0.01em; font-size: clamp(22px, 2.2vw, 28px); margin-bottom:32px; }
+
+  .nb-steps { display:flex; flex-direction:column; }
+  .nb-step { display:grid; grid-template-columns:44px 1fr; gap:16px; padding:18px 0; border-bottom:1px dashed var(--line); }
+  .nb-step:last-child { border-bottom:none; }
+  .nb-step-num {
+    font-weight:800; font-size:16px; color:var(--marker2);
+    width:32px; height:32px; border:2px solid var(--marker2); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .nb-step-title { font-weight:700; font-size:15px; margin-bottom:4px; }
+  .nb-step-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+
+  .nb-faq-list { display:flex; flex-direction:column; }
+  .nb-faq-item { border-bottom:1px dashed var(--line); padding: 16px 0; cursor:pointer; }
+  .nb-faq-q { font-weight:700; font-size:14px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .nb-faq-mark {
+    color:var(--marker2); font-size:16px; font-weight:800; transition: transform 0.2s ease;
+    width:24px; height:24px; border:1.5px solid var(--marker2); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .nb-faq-item.open .nb-faq-mark { transform: rotate(45deg); background:var(--marker2); color:#fff; }
+  .nb-faq-a { font-size:13px; color:var(--muted); line-height:1.6; margin-top:10px; display:none; }
+  .nb-faq-item.open .nb-faq-a { display:block; }
+
+  .nb-curriculum { display:flex; flex-direction:column; gap:12px; }
+  .nb-module {
+    background:#fff; border:1.5px solid var(--ink); border-radius:10px;
+    padding:14px 16px; display:flex; align-items:center; gap:14px;
+    box-shadow:3px 3px 0 var(--line); flex-wrap:wrap;
+    border-left: 6px solid var(--mc, var(--marker));
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .nb-module:hover { transform: translateX(3px); box-shadow:5px 5px 0 var(--line); }
+  .nb-module:nth-child(1){ --mc:#2D5C3F; }
+  .nb-module:nth-child(2){ --mc:#2D6E8B; }
+  .nb-module:nth-child(3){ --mc:#C2A23E; }
+  .nb-module:nth-child(4){ --mc:#C25B3E; }
+  .nb-module:nth-child(5){ --mc:#A33E3E; }
+  .nb-module:nth-child(6){ --mc:#3E3E3E; }
+  .nb-module:nth-child(7){ --mc:#8B5E2D; }
+  .nb-module-icon { font-size:19px; flex-shrink:0; }
+  .nb-module-text { flex:1; min-width:140px; }
+  .nb-module-title { font-weight:700; font-size:13.5px; }
+  .nb-module-desc { font-size:12px; color:var(--muted); margin-top:2px; line-height:1.45; }
+  .nb-module-count { font-weight:700; font-style:italic; font-size:11.5px; color:var(--mc, var(--marker)); flex-shrink:0; margin-left:auto; white-space:nowrap; background:var(--bg); padding:4px 10px; border-radius:20px; }
+
+  .nb-price-card {
+    background: #fff; border:2px solid var(--ink); border-radius:12px;
+    box-shadow: 6px 6px 0 var(--marker);
+    padding: 26px 26px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px;
+    position: relative; overflow: hidden;
+  }
+  .nb-price-card::before {
+    content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px;
+    background: radial-gradient(circle, rgba(45,92,63,0.07), transparent 70%);
+  }
+  .nb-price-left .hand { font-size:15px; color:var(--marker2); display:block; margin-bottom:6px; }
+  .nb-price-num { font-weight:800; font-size:38px; letter-spacing:-0.02em; }
+  .nb-price-detail { font-size:12px; color:var(--muted); margin-top:8px; max-width:260px; line-height:1.55; }
+  .nb-stamp {
+    font-weight:700; font-size:11px;
+    border: 2px dashed var(--marker); color:var(--marker); border-radius:50%;
+    width:74px; height:74px; display:flex; align-items:center; justify-content:center;
+    text-align:center; transform:rotate(8deg); line-height:1.15; flex-shrink:0; position: relative; z-index: 1;
+  }
+  .nb-price-ops { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .nb-op-chip { font-size:10px; font-weight:700; background:var(--ink); color:#fff; padding:5px 11px; border-radius:20px; }
+
+  .nb-cta-section { margin-top: auto; padding-top: 24px; text-align:left; }
+  .nb-cta-title { font-weight:800; letter-spacing:-0.01em; font-size: 22px; margin-bottom:8px; }
+  .nb-cta-sub { color:var(--muted); font-size:13px; margin-bottom:18px; }
+
+  .nb-footer {
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    padding: 18px 40px; font-size:13px; color:var(--muted);
+    border-top:1px solid var(--line); background: var(--bg);
+  }
+  .nb-footer-center { font-weight:700; font-style:italic; color: var(--marker); }
+
+  @media (max-width: 999px) {
+    .nb-split { flex-direction: column; }
+    .nb-col-left, .nb-col-right { width: 100%; }
+    .nb-col-right { border-left:none; border-top: 1px solid var(--line); }
+  }
+
+  @media (max-width:700px) {
+    .nb-nav { padding:16px 20px; }
+    .nb-col-left, .nb-col-right { padding: 32px 22px; }
+    .nb-grid3 { grid-template-columns:1fr; }
+    .nb-price-card { flex-direction:column; align-items:flex-start; }
+    .nb-footer { flex-direction: column; text-align:center; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+<nav class="nb-nav">
+  <a href="/" class="nb-logo">📓 PromptForge <span class="nb-logo-academy">Academy</span></a>
+  <div class="nb-nav-links">
+    {% if user %}
+      <a href="/dashboard" class="nb-btn">Dashboard →</a>
+    {% else %}
+      <a href="/subscribe" class="nb-btn">Subscribe →</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="nb-split">
+
+  <!-- LEFT COLUMN -->
+  <div class="nb-col-left">
+
+    <section class="nb-hero">
+      <div class="nb-tape animate-fade-up">field notes for the curious</div>
+      <h1 class="nb-hero-title animate-fade-up delay-1">Stop guessing. Start <span class="nb-circle">getting answers</span> that actually work.</h1>
+      <p class="nb-hero-sub animate-fade-up delay-2">A practical, hands-on course on talking to AI — written like the notes you wish someone had handed you on day one.</p>
+      <div class="nb-hero-ctas animate-fade-up delay-3">
+        <a href="/subscribe" class="nb-btn">Open the notebook →</a>
+        <span class="nb-arrow-note">↖</span>
+      </div>
+    </section>
+
+    <section class="nb-grid3">
+      <div class="nb-sticky animate-scale-in delay-1">
+        <div class="nb-sticky-num">35+</div>
+        <div class="nb-sticky-title">Lessons</div>
+        <div class="nb-sticky-desc">Bite-sized, practical, no fluff — across 7 modules</div>
+      </div>
+      <div class="nb-sticky animate-scale-in delay-2">
+        <div class="nb-sticky-num">AI</div>
+        <div class="nb-sticky-title">Live grader</div>
+        <div class="nb-sticky-desc">Your prompts, scored instantly with real feedback</div>
+      </div>
+      <div class="nb-sticky animate-scale-in delay-3">
+        <div class="nb-sticky-num">🏆</div>
+        <div class="nb-sticky-title">Certificate</div>
+        <div class="nb-sticky-desc">Something to actually show for it at the end</div>
+      </div>
+    </section>
+
+    <section class="nb-section">
+      <div class="nb-section-label">how it works</div>
+      <h2 class="nb-section-title">Three steps, and you're learning.</h2>
+      <div class="nb-steps">
+        <div class="nb-step">
+          <div class="nb-step-num">1</div>
+          <div>
+            <div class="nb-step-title">Enter your Robi or Airtel number</div>
+            <div class="nb-step-desc">No email, no password to remember — just the number you already use.</div>
+          </div>
+        </div>
+        <div class="nb-step">
+          <div class="nb-step-num">2</div>
+          <div>
+            <div class="nb-step-title">Verify with the OTP we send</div>
+            <div class="nb-step-desc">This also unlocks full access — ৳2.78 is charged automatically, once.</div>
+          </div>
+        </div>
+        <div class="nb-step">
+          <div class="nb-step-num">3</div>
+          <div>
+            <div class="nb-step-title">Work through lessons at your pace</div>
+            <div class="nb-step-desc">Read the concept, try it live with the AI, get graded, take the quiz, track XP, and earn your certificate.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="nb-section" id="faq">
+      <div class="nb-section-label">good questions</div>
+      <h2 class="nb-section-title">A few things people ask.</h2>
+      <div class="nb-faq-list">
+        <div class="nb-faq-item" onclick="this.classList.toggle('open')">
+          <div class="nb-faq-q"><span>Do I need a Robi or Airtel number specifically?</span><span class="nb-faq-mark">+</span></div>
+          <div class="nb-faq-a">Yes, for now — registration and the one-time charge work through Robi (018) and Airtel (016) numbers only. Support for other operators may come later.</div>
+        </div>
+        <div class="nb-faq-item" onclick="this.classList.toggle('open')">
+          <div class="nb-faq-q"><span>Is ৳2.78 really the only cost?</span><span class="nb-faq-mark">+</span></div>
+          <div class="nb-faq-a">Yes. It's charged automatically when you verify your OTP. There's no separate payment page, no hidden fee, and no upsell later.</div>
+        </div>
+        <div class="nb-faq-item" onclick="this.classList.toggle('open')">
+          <div class="nb-faq-q"><span>Do I need any prior experience with AI?</span><span class="nb-faq-mark">+</span></div>
+          <div class="nb-faq-a">None at all. Module 1 starts from "what is AI" and builds up gradually. By the end, you'll be using techniques professionals use daily.</div>
+        </div>
+        <div class="nb-faq-item" onclick="this.classList.toggle('open')">
+          <div class="nb-faq-q"><span>What's the "AI grader"?</span><span class="nb-faq-mark">+</span></div>
+          <div class="nb-faq-a">After writing a prompt in any lesson, you can ask the AI to score it from 0–10 and explain exactly what to improve — like having a tutor review your work instantly.</div>
+        </div>
+        <div class="nb-faq-item" onclick="this.classList.toggle('open')">
+          <div class="nb-faq-q"><span>Can I learn at my own pace?</span><span class="nb-faq-mark">+</span></div>
+          <div class="nb-faq-a">Completely. There's no schedule or deadline — your progress, XP, and streak are saved automatically, so you can pick up exactly where you left off.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="nb-col-right">
+
+    <section id="curriculum">
+      <div class="nb-section-label">the curriculum</div>
+      <div class="nb-curriculum">
+        <div class="nb-module">
+          <div class="nb-module-icon">🟢</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">Foundation</div>
+            <div class="nb-module-desc">What AI is, how LLMs work, and why prompts matter</div>
+          </div>
+          <div class="nb-module-count">5 lessons</div>
+        </div>
+        <div class="nb-module">
+          <div class="nb-module-icon">🔵</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">Prompt Basics</div>
+            <div class="nb-module-desc">Specificity, roles, context, output format</div>
+          </div>
+          <div class="nb-module-count">5 lessons</div>
+        </div>
+        <div class="nb-module">
+          <div class="nb-module-icon">🟡</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">Intermediate Prompting</div>
+            <div class="nb-module-desc">Chain of thought, few-shot examples, iteration</div>
+          </div>
+          <div class="nb-module-count">5 lessons</div>
+        </div>
+        <div class="nb-module">
+          <div class="nb-module-icon">🟠</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">Advanced Technique</div>
+            <div class="nb-module-desc">System prompts, prompt chaining, AI ethics</div>
+          </div>
+          <div class="nb-module-count">6 lessons</div>
+        </div>
+        <div class="nb-module">
+          <div class="nb-module-icon">🔴</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">Real-World Use Cases</div>
+            <div class="nb-module-desc">CVs, business plans, code, content, research</div>
+          </div>
+          <div class="nb-module-count">7 lessons</div>
+        </div>
+        <div class="nb-module">
+          <div class="nb-module-icon">⚫</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">AI Tools Ecosystem</div>
+            <div class="nb-module-desc">ChatGPT vs Claude vs Gemini, image AI, automation</div>
+          </div>
+          <div class="nb-module-count">5 lessons</div>
+        </div>
+        <div class="nb-module">
+          <div class="nb-module-icon">🏆</div>
+          <div class="nb-module-text">
+            <div class="nb-module-title">Capstone Projects</div>
+            <div class="nb-module-desc">Build a real AI assistant, validate a business idea</div>
+          </div>
+          <div class="nb-module-count">4 lessons</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="nb-section-label">Easy pricing</div>
+      <div class="nb-price-card">
+        <div class="nb-price-left">
+          <span class="hand">single payment</span>
+          <div class="nb-price-num">৳2.78 (VAT+SC+SD)</div>
+          <div class="nb-price-detail">No recurring fees. Charged instantly via airtime balance upon verification.</div>
+          <div class="nb-price-ops">
+            <span class="nb-op-chip">ROBI · 018</span>
+            <span class="nb-op-chip">AIRTEL · 016</span>
+          </div>
+        </div>
+        <div class="nb-stamp">No<br>Hidden<br>Fees</div>
+      </div>
+    </section>
+
+    <section class="nb-cta-section">
+      <div class="nb-cta-title">Ready to understand AI?</div>
+      <div class="nb-cta-sub">Start learning in the next two minutes.</div>
+      <a href="/subscribe" class="nb-btn" style="font-size:15px; padding:12px 24px;">Subscribe for ৳2.78 →</a>
+    </section>
+
+  </div>
+
+</div>
+
+<footer class="nb-footer">
+  <span>© 2026 PromptForge Academy</span>
+  <span class="nb-footer-center">forge your future, one prompt at a time ✌</span>
+  <span>Available on: Robi / Airtel</span>
+</footer>
+
+</div>
+{% endblock %}

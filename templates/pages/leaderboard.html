@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard — PromptForge Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+    --gold: #C49A1A;
+    --silver: #7A7A8C;
+    --bronze: #8C5A2D;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  .nb-body {
+    background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 36px;
+  }
+
+  @keyframes fadeUp { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .animate-fade-up { opacity:0; animation: fadeUp 0.5s ease forwards; }
+  .delay-1{animation-delay:.06s} .delay-2{animation-delay:.12s} .delay-3{animation-delay:.18s}
+
+  .nb-nav {
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 16px 40px; background:var(--bg); border-bottom:1px solid var(--line);
+  }
+  .nb-logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:17px; color:var(--ink); text-decoration:none; }
+  .nb-logo-academy { color: #8C3A24; }
+  .nb-back { font-size:13px; font-weight:600; color:var(--muted); text-decoration:none; }
+  .nb-back:hover { color:var(--ink); }
+
+  .nb-container { max-width: 680px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  .nb-header { margin-bottom:32px; }
+  .nb-header-tag { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--marker2); background:var(--bg2); padding:5px 12px; border-radius:20px; margin-bottom:12px; }
+  .nb-header-title { font-weight:800; font-size:28px; letter-spacing:-0.01em; margin-bottom:6px; }
+  .nb-header-sub { font-size:13.5px; color:var(--muted); }
+
+  /* User rank card */
+  .nb-rank-card {
+    background:#fff; border:2px solid var(--ink); border-radius:14px;
+    padding:20px 24px; box-shadow:5px 5px 0 var(--marker);
+    display:flex; align-items:center; gap:16px; margin-bottom:28px;
+  }
+  .nb-rank-badge { font-weight:800; font-size:22px; color:var(--marker); min-width:40px; }
+  .nb-rank-info { flex:1; }
+  .nb-rank-name { font-weight:700; font-size:15px; }
+  .nb-rank-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .nb-rank-xp { font-weight:800; font-size:18px; color:var(--marker); }
+
+  /* Top 3 podium */
+  .nb-podium { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:28px; align-items:end; }
+  .nb-podium-item { text-align:center; }
+  .nb-podium-card {
+    background:#fff; border:2px solid var(--ink); border-radius:12px;
+    padding:16px 10px; box-shadow:4px 4px 0 var(--line);
+  }
+  .nb-podium-item:nth-child(1) .nb-podium-card { box-shadow:4px 4px 0 var(--silver); border-color:var(--silver); }
+  .nb-podium-item:nth-child(2) .nb-podium-card { box-shadow:5px 5px 0 var(--gold); border-color:var(--gold); }
+  .nb-podium-item:nth-child(3) .nb-podium-card { box-shadow:4px 4px 0 var(--bronze); border-color:var(--bronze); }
+  .nb-podium-medal { font-size:28px; margin-bottom:6px; }
+  .nb-podium-name { font-weight:700; font-size:13px; margin-bottom:4px; word-break:break-all; }
+  .nb-podium-xp { font-size:12px; color:var(--muted); }
+  .nb-podium-rank { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; margin-top:8px; color:var(--muted); }
+
+  /* Leaderboard list */
+  .nb-section-label { display:flex; align-items:center; gap:8px; font-weight:700; font-style:italic; font-size:14px; color:var(--marker); margin-bottom:16px; }
+  .nb-section-label::before { content:''; width:20px; height:2px; background:var(--marker2); display:inline-block; }
+
+  .nb-lb-list { display:flex; flex-direction:column; gap:10px; }
+  .nb-lb-row {
+    background:#fff; border:1.5px solid var(--line); border-radius:10px;
+    padding:14px 18px; display:flex; align-items:center; gap:14px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .nb-lb-row:hover { transform:translateX(3px); box-shadow:4px 4px 0 var(--line); }
+  .nb-lb-row.is-me { border:2px solid var(--marker); background:#EEF3EC; box-shadow:4px 4px 0 var(--marker); }
+  .nb-lb-rank { font-weight:800; font-size:14px; color:var(--muted); min-width:28px; }
+  .nb-lb-row.is-me .nb-lb-rank { color:var(--marker); }
+  .nb-lb-name { flex:1; font-weight:600; font-size:14px; }
+  .nb-lb-streak { font-size:12px; color:var(--muted); }
+  .nb-lb-xp { font-weight:800; font-size:15px; color:var(--marker); }
+  .nb-lb-me-badge { font-size:10px; font-weight:700; background:var(--marker); color:#fff; padding:2px 8px; border-radius:10px; flex-shrink:0; }
+
+  .nb-empty { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
+
+  @media (max-width:700px) {
+    .nb-container { padding:28px 18px 60px; }
+    .nb-nav { padding:14px 18px; }
+    .nb-header-title { font-size:22px; }
+    .nb-podium { gap:8px; }
+    .nb-podium-name { font-size:11px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+<nav class="nb-nav">
+  <a href="/dashboard" class="nb-logo">📓 PromptForge <span class="nb-logo-academy">Academy</span></a>
+  <a href="/dashboard" class="nb-back">← Dashboard</a>
+</nav>
+
+<div class="nb-container">
+
+  <div class="nb-header animate-fade-up">
+    <div class="nb-header-tag">🏆 Leaderboard</div>
+    <div class="nb-header-title">Top Learners</div>
+    <div class="nb-header-sub">Ranked by total XP earned</div>
+  </div>
+
+  <!-- Your rank -->
+  {% if user_rank %}
+  <div class="nb-rank-card animate-fade-up delay-1">
+    <div class="nb-rank-badge">#{{ user_rank }}</div>
+    <div class="nb-rank-info">
+      <div class="nb-rank-name">Your Position</div>
+      <div class="nb-rank-sub">🔥 {{ user.streak }} day streak</div>
+    </div>
+    <div class="nb-rank-xp">{{ user.xp }} XP</div>
+  </div>
+  {% endif %}
+
+  <!-- Top 3 podium -->
+  {% if leaderboard|length >= 3 %}
+  <div class="nb-podium animate-fade-up delay-2">
+    <div class="nb-podium-item">
+      <div class="nb-podium-card">
+        <div class="nb-podium-medal">🥈</div>
+        <div class="nb-podium-name">{{ leaderboard[1].name }}</div>
+        <div class="nb-podium-xp">{{ leaderboard[1].xp }} XP</div>
+      </div>
+      <div class="nb-podium-rank">2nd</div>
+    </div>
+    <div class="nb-podium-item">
+      <div class="nb-podium-card">
+        <div class="nb-podium-medal">🥇</div>
+        <div class="nb-podium-name">{{ leaderboard[0].name }}</div>
+        <div class="nb-podium-xp">{{ leaderboard[0].xp }} XP</div>
+      </div>
+      <div class="nb-podium-rank">1st</div>
+    </div>
+    <div class="nb-podium-item">
+      <div class="nb-podium-card">
+        <div class="nb-podium-medal">🥉</div>
+        <div class="nb-podium-name">{{ leaderboard[2].name }}</div>
+        <div class="nb-podium-xp">{{ leaderboard[2].xp }} XP</div>
+      </div>
+      <div class="nb-podium-rank">3rd</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="nb-section-label">all rankings</div>
+
+  <div class="nb-lb-list animate-fade-up delay-3">
+    {% if leaderboard %}
+      {% for entry in leaderboard %}
+      <div class="nb-lb-row {% if entry.is_current_user %}is-me{% endif %}">
+        <div class="nb-lb-rank">#{{ entry.rank }}</div>
+        <div class="nb-lb-name">{{ entry.name }}</div>
+        <div class="nb-lb-streak">🔥 {{ entry.streak }}d</div>
+        <div class="nb-lb-xp">{{ entry.xp }} XP</div>
+        {% if entry.is_current_user %}
+        <div class="nb-lb-me-badge">YOU</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="nb-empty">No learners yet — be the first! 🚀</div>
+    {% endif %}
+  </div>
+
+</div>
+</div>
+{% endblock %}

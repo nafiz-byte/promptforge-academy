@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz — {{ lesson.title }} — PromptForge Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  .nb-body {
+    background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 36px;
+  }
+
+  @keyframes fadeUp { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .animate-fade-up { opacity:0; animation: fadeUp 0.5s ease forwards; }
+
+  .nb-nav {
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 16px 40px; background:var(--bg); border-bottom:1px solid var(--line);
+  }
+  .nb-logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:17px; color:var(--ink); text-decoration:none; }
+  .nb-logo-academy { color: #8C3A24; }
+  .nb-back { font-size:13px; font-weight:600; color:var(--muted); text-decoration:none; }
+  .nb-back:hover { color:var(--ink); }
+
+  .nb-container { max-width: 680px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  .nb-quiz-header { margin-bottom: 32px; }
+  .nb-quiz-tag { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--marker2); background:var(--bg2); padding:5px 12px; border-radius:20px; margin-bottom:12px; }
+  .nb-quiz-title { font-weight:800; font-size:26px; letter-spacing:-0.01em; margin-bottom:6px; }
+  .nb-quiz-meta { font-size:13.5px; color:var(--muted); }
+
+  .nb-progress-wrap { background:var(--bg2); border-radius:20px; height:8px; margin-bottom:36px; border:1px solid var(--line); overflow:hidden; }
+  .nb-progress-fill { height:100%; background:var(--marker); border-radius:20px; transition: width 0.4s ease; }
+
+  .nb-question-card {
+    background:#fff; border:2px solid var(--ink); border-radius:14px;
+    padding:26px; box-shadow:5px 5px 0 var(--line); margin-bottom:20px;
+    display:none;
+  }
+  .nb-question-card.active { display:block; animation: fadeUp 0.4s ease forwards; }
+  .nb-question-num { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); margin-bottom:10px; }
+  .nb-question-text { font-weight:700; font-size:17px; line-height:1.45; margin-bottom:20px; }
+
+  .nb-options { display:flex; flex-direction:column; gap:10px; }
+  .nb-option {
+    padding:13px 18px; border:2px solid var(--line); border-radius:10px;
+    font-size:14.5px; font-weight:500; cursor:pointer; background:#fff;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    text-align:left; width:100%; color:var(--ink); font-family:'DM Sans',sans-serif;
+  }
+  .nb-option:hover { border-color:var(--ink); transform:translateX(3px); }
+  .nb-option.selected { border-color:var(--marker); background:#EEF3EC; font-weight:700; }
+  .nb-option.correct { border-color:var(--marker); background:#EEF3EC; font-weight:700; }
+  .nb-option.wrong { border-color:var(--marker2); background:#FBEEEC; font-weight:700; }
+  .nb-option:disabled { cursor:default; }
+
+  .nb-question-nav { display:flex; justify-content:flex-end; margin-top:18px; }
+  .nb-next-btn {
+    background:var(--marker); color:#fff; border:none; border-radius:8px;
+    padding:11px 24px; font-weight:700; font-size:14px; cursor:pointer;
+    font-family:'DM Sans',sans-serif; box-shadow:3px 3px 0 var(--ink);
+    transition: transform .15s ease, box-shadow .15s ease;
+    display:none;
+  }
+  .nb-next-btn.show { display:block; }
+  .nb-next-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink); }
+
+  /* Result */
+  .nb-result-card {
+    background:#fff; border:2px solid var(--ink); border-radius:14px;
+    padding:32px; box-shadow:6px 6px 0 var(--marker); text-align:center;
+    display:none;
+  }
+  .nb-result-card.show { display:block; animation: fadeUp 0.5s ease forwards; }
+  .nb-result-emoji { font-size:52px; margin-bottom:14px; }
+  .nb-result-score { font-weight:800; font-size:42px; letter-spacing:-0.02em; color:var(--marker); }
+  .nb-result-label { font-size:14px; color:var(--muted); margin-top:4px; margin-bottom:20px; }
+  .nb-result-passed { display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px; padding:8px 18px; border-radius:20px; margin-bottom:24px; }
+  .nb-result-passed.pass { background:#EEF3EC; color:var(--marker); border:1.5px solid var(--marker); }
+  .nb-result-passed.fail { background:#FBEEEC; color:var(--marker2); border:1.5px solid var(--marker2); }
+  .nb-result-xp { font-size:13px; color:var(--muted); margin-bottom:28px; }
+  .nb-result-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .nb-result-btn { padding:11px 22px; border-radius:8px; font-weight:700; font-size:13.5px; text-decoration:none; display:inline-block; box-shadow:3px 3px 0 var(--ink); }
+  .nb-result-btn.primary { background:var(--marker); color:#fff; }
+  .nb-result-btn.secondary { background:#fff; border:2px solid var(--ink); color:var(--ink); box-shadow:3px 3px 0 var(--line); }
+
+  .nb-review-list { margin-top:32px; text-align:left; display:flex; flex-direction:column; gap:12px; }
+  .nb-review-item { padding:14px 18px; border-radius:10px; border:1.5px solid; }
+  .nb-review-item.correct { background:#EEF3EC; border-color:#A8C4A0; }
+  .nb-review-item.wrong { background:#FBEEEC; border-color:#E0A593; }
+  .nb-review-q { font-weight:700; font-size:13.5px; margin-bottom:6px; }
+  .nb-review-a { font-size:12.5px; color:var(--muted); }
+  .nb-review-a span { font-weight:700; }
+
+  @media (max-width:700px) {
+    .nb-container { padding:28px 18px 60px; }
+    .nb-nav { padding:14px 18px; }
+    .nb-quiz-title { font-size:22px; }
+    .nb-result-score { font-size:34px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+<nav class="nb-nav">
+  <a href="/dashboard" class="nb-logo">📓 PromptForge <span class="nb-logo-academy">Academy</span></a>
+  <a href="/lesson/{{ lesson.id }}" class="nb-back">← Back to lesson</a>
+</nav>
+
+<div class="nb-container">
+
+  <div class="nb-quiz-header animate-fade-up">
+    <div class="nb-quiz-tag">📝 Quiz</div>
+    <div class="nb-quiz-title">{{ lesson.title }}</div>
+    <div class="nb-quiz-meta">{{ total_questions }} questions · Pass with 60%</div>
+  </div>
+
+  <div class="nb-progress-wrap">
+    <div class="nb-progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  {% for q in questions %}
+  <div class="nb-question-card {% if loop.index == 1 %}active{% endif %}" data-index="{{ loop.index0 }}">
+    <div class="nb-question-num">Question {{ loop.index }} of {{ total_questions }}</div>
+    <div class="nb-question-text">{{ q.question }}</div>
+    <div class="nb-options">
+      {% for option in q.options %}
+      <button class="nb-option" data-q="{{ loop.index0 }}" data-opt="{{ loop.index0 }}" onclick="selectOption(this, {{ loop.index0 }}, {{ loop.index0 }})">
+        {{ option }}
+      </button>
+      {% endfor %}
+    </div>
+    <div class="nb-question-nav">
+      <button class="nb-next-btn" id="nextBtn{{ loop.index0 }}" onclick="nextQuestion({{ loop.index0 }})">
+        {% if loop.last %}Submit Quiz →{% else %}Next →{% endif %}
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="nb-result-card" id="resultCard">
+    <div class="nb-result-emoji" id="resultEmoji">🎉</div>
+    <div class="nb-result-score" id="resultScore"></div>
+    <div class="nb-result-label" id="resultLabel"></div>
+    <div id="resultPassedBadge"></div>
+    <div class="nb-result-xp" id="resultXP"></div>
+    <div class="nb-result-btns">
+      <a href="/lesson/{{ lesson.id }}" class="nb-result-btn secondary">← Back to lesson</a>
+      <button onclick="retryQuiz()" class="nb-result-btn secondary" style="cursor:pointer; border:2px solid var(--ink); font-family:'DM Sans',sans-serif;">Retry Quiz</button>
+      <a href="/dashboard" class="nb-result-btn primary">Dashboard →</a>
+    </div>
+    <div class="nb-review-list" id="reviewList"></div>
+  </div>
+
+</div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const totalQuestions = {{ total_questions }};
+const answers = new Array(totalQuestions).fill(null);
+const questions = {{ questions | tojson }};
+let currentQuestion = 0;
+
+function selectOption(btn, qIndex, optIndex) {
+    if (answers[qIndex] !== null) return;
+    answers[qIndex] = optIndex;
+
+    const card = document.querySelector(`.nb-question-card[data-index="${qIndex}"]`);
+    card.querySelectorAll('.nb-option').forEach(b => {
+        b.disabled = true;
+        b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+
+    document.getElementById(`nextBtn${qIndex}`).classList.add('show');
+
+    const filled = answers.filter(a => a !== null).length;
+    document.getElementById('progressFill').style.width = `${(filled / totalQuestions) * 100}%`;
+}
+
+function nextQuestion(currentIndex) {
+    const currentCard = document.querySelector(`.nb-question-card[data-index="${currentIndex}"]`);
+    currentCard.classList.remove('active');
+
+    if (currentIndex + 1 < totalQuestions) {
+        const nextCard = document.querySelector(`.nb-question-card[data-index="${currentIndex + 1}"]`);
+        nextCard.classList.add('active');
+        currentQuestion = currentIndex + 1;
+    } else {
+        submitQuiz();
+    }
+}
+
+async function submitQuiz() {
+    try {
+        const res = await fetch('/api/quiz/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                quiz_id: "{{ lesson.id }}",
+                module_id: "{{ module.id }}",
+                answers: answers
+            })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            showResult(data);
+        } else {
+            alert('Something went wrong. Please try again.');
+        }
+    } catch (e) {
+        alert('Connection error. Please try again.');
+    }
+}
+
+function showResult(data) {
+    document.querySelectorAll('.nb-question-card').forEach(c => c.classList.remove('active'));
+
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('resultScore').textContent = `${data.score}/${data.total}`;
+    document.getElementById('resultLabel').textContent = `${data.percent}% correct`;
+    document.getElementById('resultEmoji').textContent = data.passed ? '🎉' : '📖';
+    document.getElementById('resultXP').textContent = `+${data.xp_earned} XP earned`;
+
+    const badge = document.getElementById('resultPassedBadge');
+    badge.innerHTML = data.passed
+        ? `<div class="nb-result-passed pass">✅ Passed!</div>`
+        : `<div class="nb-result-passed fail">❌ Not passed — try again</div>`;
+
+    if (data.results) {
+        const reviewList = document.getElementById('reviewList');
+        reviewList.innerHTML = data.results.map((r, i) => `
+            <div class="nb-review-item ${r.is_correct ? 'correct' : 'wrong'}">
+                <div class="nb-review-q">${escapeHtml(r.question)}</div>
+                <div class="nb-review-a">
+                    Your answer: <span>${escapeHtml(r.options[r.your_answer] || '—')}</span>
+                    ${!r.is_correct ? ` · Correct: <span>${escapeHtml(r.options[r.correct_answer])}</span>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('resultCard').classList.add('show');
+}
+
+function retryQuiz() {
+    answers.fill(null);
+    currentQuestion = 0;
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('resultCard').classList.remove('show');
+
+    document.querySelectorAll('.nb-question-card').forEach((card, i) => {
+        card.classList.remove('active');
+        card.querySelectorAll('.nb-option').forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('selected', 'correct', 'wrong');
+        });
+        document.getElementById(`nextBtn${i}`)?.classList.remove('show');
+    });
+
+    document.querySelector('.nb-question-card[data-index="0"]').classList.add('active');
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Register — PromptForge Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+  }
+  * { box-sizing: border-box; }
+  .nb-body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 36px;
+  }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+  .animate-fade-up { opacity:0; animation: fadeUp 0.6s ease forwards; }
+
+  .nb-nav { display:flex; justify-content:center; padding: 24px 40px; }
+  .nb-logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:19px; color:var(--ink); text-decoration:none; letter-spacing:-0.02em; }
+  .nb-logo-academy { color: #8C3A24; }
+
+  .nb-wrap { display:flex; justify-content:center; padding: 30px 24px 60px; }
+  .nb-card {
+    width:100%; max-width: 420px;
+    background:#fff; border:2px solid var(--ink); border-radius:14px;
+    box-shadow: 7px 7px 0 var(--marker);
+    padding: 38px 34px;
+  }
+  .nb-card-icon {
+    width:54px; height:54px; border-radius:50%;
+    background: var(--bg2); border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:24px;
+    margin-bottom:18px;
+  }
+  .nb-card-title { font-weight:800; font-size:24px; letter-spacing:-0.01em; margin-bottom:6px; }
+  .nb-card-sub { font-size:14px; color:var(--muted); margin-bottom:26px; line-height:1.5; }
+
+  .nb-label { display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
+  .nb-input-wrap { position:relative; margin-bottom:6px; }
+  .nb-input-prefix { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; color:var(--muted); font-weight:600; }
+  .nb-input {
+    width:100%; padding: 14px 14px 14px 64px;
+    border: 2px solid var(--line); border-radius:10px;
+    background: var(--bg); color:var(--ink); font-size:16px; font-weight:600;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .nb-input:focus { outline:none; border-color: var(--marker); background:#fff; }
+  .nb-input.error { border-color: var(--marker2); }
+  .nb-error { font-size:12.5px; color:var(--marker2); margin-top:6px; min-height:16px; }
+
+  .nb-pills { display:flex; gap:8px; margin: 14px 0 20px; }
+  .nb-pill { display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; background:var(--bg2); padding:6px 12px; border-radius:20px; color:var(--ink); }
+  .nb-dot { width:7px; height:7px; border-radius:50%; }
+  .nb-dot.red { background:#C0392B; }
+  .nb-dot.blue { background:#2D6E8B; }
+
+  .nb-notice {
+    background: var(--bg2); border:1.5px dashed var(--marker);
+    border-radius:10px; padding:14px 16px; margin-bottom:22px;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .nb-notice-icon { font-size:17px; flex-shrink:0; }
+  .nb-notice-text { font-size:12.5px; color:var(--ink); line-height:1.55; }
+  .nb-notice-text strong { color: #8C3A24; }
+
+  .nb-btn-submit {
+    width:100%; padding:15px; border:none; border-radius:10px;
+    background: var(--marker); color:#fff; font-weight:700; font-size:15px;
+    font-family:'DM Sans', sans-serif; cursor:pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .nb-btn-submit:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+  .nb-btn-submit:active { transform: translate(0,0); box-shadow: 2px 2px 0 var(--ink); }
+  .nb-btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:3px 3px 0 var(--ink); }
+
+  .nb-footer-link { text-align:center; font-size:13px; color:var(--muted); margin-top:22px; }
+  .nb-footer-link a { color: var(--marker); font-weight:700; text-decoration:none; }
+  .nb-footer-link a:hover { text-decoration:underline; }
+
+  .spinner {
+    width:16px; height:16px; border:2px solid rgba(255,255,255,0.4);
+    border-top-color:#fff; border-radius:50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast */
+  .nb-toast {
+    position:fixed; top:20px; right:20px; z-index:9999;
+    background:#fff; border:2px solid var(--ink); border-radius:10px;
+    padding:13px 18px; font-size:13.5px; font-weight:600; color:var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    display:flex; align-items:center; gap:10px; max-width:320px;
+    animation: slideIn 0.3s ease;
+  }
+  .nb-toast.error { border-color: var(--marker2); box-shadow: 4px 4px 0 var(--marker2); }
+  .nb-toast.success { border-color: var(--marker); box-shadow: 4px 4px 0 var(--marker); }
+  @keyframes slideIn { from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+<nav class="nb-nav">
+  <a href="/" class="nb-logo">📓 PromptForge <span class="nb-logo-academy">Academy</span></a>
+</nav>
+
+<div class="nb-wrap">
+  <div class="nb-card animate-fade-up">
+    <div class="nb-card-icon">📝</div>
+    <div class="nb-card-title">Create your account</div>
+    <div class="nb-card-sub">Enter your Robi or Airtel number to get started</div>
+
+    <label class="nb-label">Mobile Number</label>
+    <div class="nb-input-wrap">
+      <span class="nb-input-prefix">BD +88</span>
+      <input type="tel" id="phoneInput" placeholder="01XXXXXXXXX" maxlength="11" class="nb-input">
+    </div>
+    <div class="nb-error" id="phoneError"></div>
+
+    <div class="nb-pills">
+      <span class="nb-pill"><span class="nb-dot red"></span> Robi (018)</span>
+      <span class="nb-pill"><span class="nb-dot blue"></span> Airtel (016)</span>
+    </div>
+
+    <div class="nb-notice">
+      <span class="nb-notice-icon">💰</span>
+      <span class="nb-notice-text">A one-time fee of <strong>৳2.78 (VAT+SC+SD)</strong> will be charged to your mobile balance upon OTP verification. No separate payment needed!</span>
+    </div>
+
+    <button id="sendOtpBtn" class="nb-btn-submit" onclick="requestOTP()">
+      Send OTP →
+    </button>
+
+    <div class="nb-footer-link">
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function validatePhone(phone) {
+    phone = phone.trim();
+    if (phone.length !== 11) return false;
+    if (!phone.startsWith('016') && !phone.startsWith('018')) return false;
+    if (!/^\d+$/.test(phone)) return false;
+    return true;
+}
+
+function showNbToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = 'nb-toast ' + type;
+    toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+function setNbBtnLoading(btn, loading, text) {
+    if (loading) {
+        btn.dataset.original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> ${text}`;
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = btn.dataset.original;
+    }
+}
+
+async function requestOTP() {
+    const phoneInput = document.getElementById('phoneInput');
+    const errorEl = document.getElementById('phoneError');
+    const btn = document.getElementById('sendOtpBtn');
+    const phone = phoneInput.value.trim();
+
+    errorEl.textContent = '';
+    phoneInput.classList.remove('error');
+
+    if (!validatePhone(phone)) {
+        errorEl.textContent = 'শুধুমাত্র Robi (018) বা Airtel (016) নম্বর দিন — 11 digits';
+        phoneInput.classList.add('error');
+        return;
+    }
+
+    setNbBtnLoading(btn, true, 'Sending OTP...');
+
+    const fullPhone = '880' + phone.substring(1);
+
+    try {
+        const res = await fetch('/api/auth/request-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ phone: fullPhone })
+        });
+        const data = await res.json();
+
+        setNbBtnLoading(btn, false);
+
+        if (res.ok && data.success) {
+            showNbToast(data.message, 'success');
+            setTimeout(() => {
+                window.location.href = `/verify-otp?phone=${fullPhone}`;
+            }, 700);
+        } else {
+            showNbToast(data.message || data.detail || 'Failed to send OTP', 'error');
+        }
+    } catch (e) {
+        setNbBtnLoading(btn, false);
+        showNbToast('Something went wrong. Try again.', 'error');
+    }
+}
+
+document.getElementById('phoneInput').addEventListener('input', function() {
+    this.classList.remove('error');
+    document.getElementById('phoneError').textContent = '';
+});
+
+document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') requestOTP();
+});
+</script>
+{% endblock %}

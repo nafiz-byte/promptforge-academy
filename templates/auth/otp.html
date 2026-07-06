@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP — PromptForge Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+  }
+  * { box-sizing: border-box; }
+  .nb-body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 36px;
+  }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+  .animate-fade-up { opacity:0; animation: fadeUp 0.6s ease forwards; }
+  @keyframes pulseRing { 0%,100%{box-shadow:0 0 0 0 rgba(45,92,63,0.25);} 50%{box-shadow:0 0 0 8px rgba(45,92,63,0);} }
+  .animate-pulse-ring { animation: pulseRing 2s ease-in-out infinite; }
+
+  .nb-nav { display:flex; justify-content:center; padding: 24px 40px; }
+  .nb-logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:19px; color:var(--ink); text-decoration:none; letter-spacing:-0.02em; }
+  .nb-logo-academy { color: #8C3A24; }
+
+  .nb-wrap { display:flex; justify-content:center; padding: 30px 24px 60px; }
+  .nb-card {
+    width:100%; max-width: 420px;
+    background:#fff; border:2px solid var(--ink); border-radius:14px;
+    box-shadow: 7px 7px 0 var(--marker);
+    padding: 38px 34px;
+  }
+  .nb-card-icon {
+    width:60px; height:60px; border-radius:50%;
+    background: var(--bg2); border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+    margin: 0 auto 18px;
+  }
+  .nb-card-title { font-weight:800; font-size:22px; letter-spacing:-0.01em; margin-bottom:8px; text-align:center; }
+  .nb-card-sub { font-size:13.5px; color:var(--muted); text-align:center; margin-bottom:6px; line-height:1.5; }
+  .nb-phone-display { font-weight:700; color:var(--ink); }
+  .nb-demo-badge {
+    display:block; text-align:center; margin: 12px auto 24px; width:fit-content;
+    font-size:12px; font-weight:700; color: var(--marker);
+    background: var(--bg2); padding:6px 14px; border-radius:20px; border:1px dashed var(--marker);
+  }
+
+  .nb-otp-row { display:flex; justify-content:center; gap:8px; margin-bottom: 8px; }
+  .nb-otp-box {
+    width: 44px; height: 54px; text-align:center; font-size:22px; font-weight:800;
+    border: 2px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink);
+    font-family:'DM Sans', sans-serif;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .nb-otp-box:focus { outline:none; border-color: var(--marker); background:#fff; }
+  .nb-otp-box.error { border-color: var(--marker2); }
+  .nb-error { font-size:12.5px; color:var(--marker2); text-align:center; margin: 8px 0 18px; min-height:16px; }
+
+  .nb-notice {
+    background: var(--bg2); border:1.5px dashed var(--marker2);
+    border-radius:10px; padding:14px 16px; margin-bottom:22px;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .nb-notice-icon { font-size:17px; flex-shrink:0; }
+  .nb-notice-text { font-size:12.5px; color:var(--ink); line-height:1.55; }
+  .nb-notice-text strong { color: #8C3A24; }
+
+  .nb-btn-submit {
+    width:100%; padding:15px; border:none; border-radius:10px;
+    background: var(--marker); color:#fff; font-weight:700; font-size:15px;
+    font-family:'DM Sans', sans-serif; cursor:pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom: 16px;
+  }
+  .nb-btn-submit:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+  .nb-btn-submit:active { transform: translate(0,0); box-shadow: 2px 2px 0 var(--ink); }
+  .nb-btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:3px 3px 0 var(--ink); }
+
+  .nb-resend { text-align:center; font-size:13px; color:var(--muted); }
+  .nb-resend button { background:none; border:none; color:var(--marker); font-weight:700; cursor:pointer; font-size:13px; font-family:'DM Sans', sans-serif; padding:0; }
+  .nb-resend button:hover { text-decoration:underline; }
+  .nb-resend button:disabled { color:var(--muted); cursor:default; text-decoration:none; }
+
+  .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .nb-toast {
+    position:fixed; top:20px; right:20px; z-index:9999;
+    background:#fff; border:2px solid var(--ink); border-radius:10px;
+    padding:13px 18px; font-size:13.5px; font-weight:600; color:var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    display:flex; align-items:center; gap:10px; max-width:320px;
+    animation: slideIn 0.3s ease;
+  }
+  .nb-toast.error { border-color: var(--marker2); box-shadow: 4px 4px 0 var(--marker2); }
+  .nb-toast.success { border-color: var(--marker); box-shadow: 4px 4px 0 var(--marker); }
+  @keyframes slideIn { from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+<nav class="nb-nav">
+  <a href="/" class="nb-logo">📓 PromptForge <span class="nb-logo-academy">Academy</span></a>
+</nav>
+
+<div class="nb-wrap">
+  <div class="nb-card animate-fade-up">
+    <div class="nb-card-icon animate-pulse-ring">📱</div>
+    <div class="nb-card-title">Enter Verification Code</div>
+    <div class="nb-card-sub">We sent a 6-digit code to <span class="nb-phone-display" id="phoneDisplay"></span></div>
+    <div class="nb-demo-badge">🧪 Demo Mode — use code <strong>123456</strong></div>
+
+    <div class="nb-otp-row" id="otpContainer">
+      <input type="text" maxlength="1" class="nb-otp-box" data-index="0">
+      <input type="text" maxlength="1" class="nb-otp-box" data-index="1">
+      <input type="text" maxlength="1" class="nb-otp-box" data-index="2">
+      <input type="text" maxlength="1" class="nb-otp-box" data-index="3">
+      <input type="text" maxlength="1" class="nb-otp-box" data-index="4">
+      <input type="text" maxlength="1" class="nb-otp-box" data-index="5">
+    </div>
+    <div class="nb-error" id="otpError"></div>
+
+    <div class="nb-notice">
+      <span class="nb-notice-icon">⚡</span>
+      <span class="nb-notice-text">Verifying will charge <strong>৳2.78</strong> to your mobile balance and unlock full access immediately.</span>
+    </div>
+
+    <button id="verifyBtn" class="nb-btn-submit" onclick="verifyOTP()">
+      Verify & Unlock Access →
+    </button>
+
+    <div class="nb-resend">
+      Didn't receive code? <button onclick="resendOTP()" id="resendBtn">Resend OTP</button>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const phone = "{{ phone }}";
+document.getElementById('phoneDisplay').textContent = '+' + phone;
+
+const inputs = document.querySelectorAll('.nb-otp-box');
+
+inputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        const value = e.target.value;
+        if (!/^\d*$/.test(value)) { e.target.value = ''; return; }
+        e.target.classList.remove('error');
+        if (value && index < inputs.length - 1) inputs[index + 1].focus();
+    });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus();
+        if (e.key === 'Enter') verifyOTP();
+    });
+    input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+        pasted.split('').forEach((char, i) => { if (inputs[i]) inputs[i].value = char; });
+        if (pasted.length === 6) inputs[5].focus();
+    });
+});
+
+function getOTPValue() {
+    return Array.from(inputs).map(i => i.value).join('');
+}
+
+function showNbToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = 'nb-toast ' + type;
+    toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+function setNbBtnLoading(btn, loading, text) {
+    if (loading) {
+        btn.dataset.original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span> ${text}`;
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = btn.dataset.original;
+    }
+}
+
+async function verifyOTP() {
+    const otp = getOTPValue();
+    const errorEl = document.getElementById('otpError');
+    const btn = document.getElementById('verifyBtn');
+
+    errorEl.textContent = '';
+
+    if (otp.length !== 6) {
+        errorEl.textContent = 'Please enter all 6 digits';
+        return;
+    }
+
+    setNbBtnLoading(btn, true, 'Verifying & Charging...');
+
+    try {
+        const res = await fetch('/api/auth/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ phone, otp })
+        });
+        const data = await res.json();
+
+        setNbBtnLoading(btn, false);
+
+        if (res.ok && data.success) {
+            showNbToast(data.message, 'success');
+            setTimeout(() => { window.location.href = data.redirect || '/dashboard'; }, 800);
+        } else {
+            errorEl.textContent = data.detail || data.message || 'Invalid OTP';
+            inputs.forEach(i => { i.value = ''; i.classList.add('error'); });
+            inputs[0].focus();
+        }
+    } catch (e) {
+        setNbBtnLoading(btn, false);
+        errorEl.textContent = 'Something went wrong. Try again.';
+    }
+}
+
+async function resendOTP() {
+    const btn = document.getElementById('resendBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+        const res = await fetch('/api/auth/request-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            showNbToast('OTP resent!', 'success');
+        } else {
+            showNbToast(data.message || 'Failed to resend', 'error');
+        }
+    } catch (e) {
+        showNbToast('Something went wrong.', 'error');
+    }
+
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Resend OTP'; }, 3000);
+}
+
+inputs[0].focus();
+</script>
+{% endblock %}

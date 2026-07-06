@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }} — PromptForge Academy{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F0;
+    --bg2: #F0EDE4;
+    --line: #C9C2B4;
+    --ink: #2B2823;
+    --marker: #2D5C3F;
+    --marker2: #C25B3E;
+    --muted: #8B8475;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin:0; }
+  .nb-body {
+    background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif;
+    display:flex; flex-direction:column; height: 100vh; overflow:hidden;
+  }
+
+  .nb-topbar {
+    display:flex; align-items:center; gap:16px; padding: 12px 20px;
+    background: var(--bg); border-bottom: 1px solid var(--line); flex-shrink:0;
+  }
+  .nb-logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:16px; color:var(--ink); text-decoration:none; flex-shrink:0; }
+  .nb-logo-academy { color: #8C3A24; }
+  .nb-back { color:var(--muted); text-decoration:none; font-size:13px; font-weight:600; flex-shrink:0; }
+  .nb-back:hover { color:var(--ink); }
+  .nb-topbar-title { font-weight:700; font-size:14px; flex:1; text-align:center; color:var(--muted); }
+  .nb-sidebar-toggle {
+    display:none; background:none; border:1.5px solid var(--ink); border-radius:8px;
+    width:34px; height:34px; align-items:center; justify-content:center; cursor:pointer; font-size:16px;
+  }
+
+  .nb-layout { display:flex; flex:1; min-height:0; }
+
+  .nb-sidebar {
+    width: 260px; flex-shrink:0; background: var(--bg2); border-right: 1px solid var(--line);
+    overflow-y:auto; padding: 16px 0;
+  }
+  .nb-sidebar-module-head {
+    display:flex; align-items:center; gap:8px; padding: 10px 18px;
+    font-weight:700; font-size:12.5px; color:var(--ink); text-transform:uppercase; letter-spacing:0.03em;
+  }
+  .nb-sidebar-lesson {
+    display:flex; align-items:center; gap:10px; padding: 9px 18px 9px 30px;
+    font-size:13.5px; color:var(--ink); text-decoration:none; border-left: 3px solid transparent;
+  }
+  .nb-sidebar-lesson:hover { background: rgba(0,0,0,0.03); }
+  .nb-sidebar-lesson.active { background:#fff; border-left-color: var(--marker); font-weight:700; }
+  .nb-sidebar-check { font-size:11px; flex-shrink:0; width:14px; }
+
+  .nb-content { flex:1; overflow-y:auto; background:var(--bg); background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 32px; }
+  .nb-content-inner { max-width: 640px; margin:0 auto; padding: 36px 40px 60px; }
+
+  .nb-breadcrumb { font-size:12px; color:var(--muted); margin-bottom: 14px; }
+  .nb-lesson-heading { font-weight:800; font-size:28px; letter-spacing:-0.01em; margin-bottom:22px; line-height:1.2; }
+
+  .nb-prose p { margin: 0 0 12px; line-height:1.75; font-size:15px; }
+  .nb-prose strong { color: var(--marker); font-weight:700; }
+
+  .nb-examples { display:flex; flex-direction:column; gap:10px; margin: 18px 0; }
+  .nb-example { border-radius:10px; padding: 13px 16px; border:1.5px solid; }
+  .nb-example.bad { background:#FBEEEC; border-color:#E0A593; }
+  .nb-example.good { background:#EEF3EC; border-color:#A8C4A0; }
+  .nb-example-label { font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+  .nb-example.bad .nb-example-label { color:#A8412B; }
+  .nb-example.good .nb-example-label { color: var(--marker); }
+  .nb-example-text { font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--ink); line-height:1.5; }
+
+  .nb-note {
+    background: var(--bg2); border:1.5px dashed var(--marker); border-radius:10px;
+    padding: 14px 16px; margin: 20px 0; font-size:13.5px; color:var(--ink); line-height:1.55;
+  }
+
+  .nb-exercise { margin-top: 32px; }
+  .nb-exercise-head {
+    background: var(--marker); color:#fff; padding: 10px 18px; border-radius: 10px 10px 0 0;
+    font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:8px;
+  }
+  .nb-exercise-body { background:#fff; border:2px solid var(--ink); border-top:none; border-radius:0 0 12px 12px; padding:20px; box-shadow: 4px 4px 0 var(--line); }
+  .nb-exercise-desc { font-size:13px; color:var(--muted); margin-bottom:12px; }
+
+  .nb-editor-wrap { background:#1E1B16; border-radius:8px; overflow:hidden; margin-bottom:14px; }
+  .nb-editor-bar { background:#2A251D; padding:7px 14px; display:flex; justify-content:space-between; align-items:center; }
+  .nb-editor-label { font-size:11px; color:#A8A095; font-family:'JetBrains Mono',monospace; }
+  .nb-editor-clear { background:none; border:none; color:#A8A095; font-size:11px; cursor:pointer; }
+  .nb-editor-clear:hover { color:#fff; }
+  .nb-textarea {
+    width:100%; background:#1E1B16; color:#E8E2D5; border:none; padding:14px 16px;
+    font-size:13.5px; font-family:'JetBrains Mono', monospace; resize:vertical; line-height:1.6; min-height:90px;
+  }
+  .nb-textarea:focus { outline:none; }
+
+  .nb-action-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .nb-run-btn, .nb-grade-btn {
+    border:none; border-radius:8px; padding: 10px 22px; font-weight:700; font-size:13.5px;
+    cursor:pointer; display:flex; align-items:center; gap:7px; font-family:'DM Sans', sans-serif;
+    box-shadow: 3px 3px 0 var(--ink); transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .nb-run-btn { background: var(--marker); color:#fff; }
+  .nb-grade-btn { background:#fff; color:var(--ink); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--marker2); }
+  .nb-run-btn:hover, .nb-grade-btn:hover { transform: translate(-2px,-2px); }
+  .nb-run-btn:hover { box-shadow: 5px 5px 0 var(--ink); }
+  .nb-grade-btn:hover { box-shadow: 5px 5px 0 var(--marker2); }
+  .nb-run-btn:disabled, .nb-grade-btn:disabled { opacity:0.55; cursor:not-allowed; transform:none; }
+
+  .spinner-sm { width:13px; height:13px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%; animation: spin .7s linear infinite; flex-shrink:0; }
+  .spinner-sm.dark { border-color: rgba(0,0,0,0.2); border-top-color: var(--ink); }
+  @keyframes spin { to{ transform:rotate(360deg); } }
+
+  .nb-coming-soon {
+    margin-top:16px; background:#fff; border:2px dashed var(--marker2);
+    border-radius:12px; padding:28px; text-align:center;
+    animation: fadeIn .35s ease;
+  }
+  .nb-coming-soon-icon { font-size:36px; margin-bottom:10px; }
+  .nb-coming-soon-title { font-weight:800; font-size:16px; margin-bottom:6px; color:var(--ink); }
+  .nb-coming-soon-sub { font-size:13px; color:var(--muted); }
+
+  .nb-result { margin-top:16px; animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .nb-result-bar { background:#2A251D; padding:7px 14px; border-radius:8px 8px 0 0; font-size:11px; color:#A8A095; font-family:'JetBrains Mono',monospace; }
+  .nb-result-body { background:#1E1B16; color:#E8E2D5; border-radius:0 0 8px 8px; padding:16px 18px; font-size:13.5px; line-height:1.7; white-space:pre-wrap; }
+  .nb-result-success { margin-top:10px; background:var(--bg2); border:1px solid var(--marker); border-radius:8px; padding:10px 14px; font-size:12.5px; color:var(--marker); font-weight:600; }
+
+  .nb-grade-card { margin-top:16px; background:#fff; border:2px solid var(--ink); border-radius:10px; padding:18px; box-shadow:4px 4px 0 var(--marker); }
+  .nb-grade-score-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .nb-grade-score { font-weight:800; font-size:32px; color: var(--marker); }
+  .nb-grade-grade { font-size:13px; font-weight:700; background:var(--bg2); padding:4px 12px; border-radius:20px; }
+  .nb-grade-section { margin-bottom:12px; }
+  .nb-grade-section-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); margin-bottom:6px; }
+  .nb-grade-list { font-size:13px; line-height:1.6; padding-left:18px; margin:0; }
+  .nb-grade-improved { background:var(--bg2); border-radius:8px; padding:12px 14px; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; }
+
+  .nb-lesson-nav { display:flex; justify-content:space-between; margin-top:40px; padding-top:20px; border-top:1px dashed var(--line); gap:12px; }
+  .nb-nav-btn { padding:10px 18px; border-radius:8px; font-weight:700; font-size:13px; text-decoration:none; }
+  .nb-nav-prev { background:#fff; border:1.5px solid var(--ink); color:var(--ink); }
+  .nb-nav-next { background: var(--marker); color:#fff; box-shadow:3px 3px 0 var(--ink); }
+  .nb-nav-complete { background: var(--marker2); color:#fff; box-shadow:3px 3px 0 var(--ink); border:none; cursor:pointer; font-family:'DM Sans',sans-serif; }
+
+  .nb-complete-badge {
+    display:inline-flex; align-items:center; gap:6px; background:var(--bg2); color:var(--marker);
+    font-weight:700; font-size:12px; padding:6px 14px; border-radius:20px; margin-bottom:18px;
+  }
+
+  @media (max-width: 900px) {
+    .nb-sidebar { position:fixed; left:0; top:53px; bottom:0; z-index:40; transform:translateX(-100%); transition:transform .25s ease; }
+    .nb-sidebar.open { transform:translateX(0); box-shadow:8px 0 20px rgba(0,0,0,0.15); }
+    .nb-sidebar-toggle { display:flex; }
+    .nb-content-inner { padding: 24px 20px 50px; }
+    .nb-topbar-title { display:none; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nb-body">
+
+  <div class="nb-topbar">
+    <button class="nb-sidebar-toggle" onclick="document.getElementById('nbSidebar').classList.toggle('open')">☰</button>
+    <a href="/dashboard" class="nb-logo">📓 PromptForge <span class="nb-logo-academy">Academy</span></a>
+    <a href="/dashboard" class="nb-back">← Dashboard</a>
+    <div class="nb-topbar-title">{{ module.title }}</div>
+    <div style="width:34px;"></div>
+  </div>
+
+  <div class="nb-layout">
+
+    <div class="nb-sidebar" id="nbSidebar">
+      {% for mod in sidebar_modules %}
+      <div class="nb-sidebar-module">
+        <div class="nb-sidebar-module-head">{{ mod.icon }} {{ mod.title }}</div>
+        {% for l in mod.lessons %}
+        <a href="/lesson/{{ l.id }}" class="nb-sidebar-lesson {% if l.id == current_lesson_id %}active{% endif %}">
+          <span class="nb-sidebar-check">{% if l.completed %}✅{% else %}○{% endif %}</span>
+          {{ l.title }}
+        </a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="nb-content">
+      <div class="nb-content-inner">
+
+        <div class="nb-breadcrumb">PromptForge Academy › {{ module.title }} › {{ lesson.title }}</div>
+
+        {% if is_completed %}
+        <div class="nb-complete-badge">✅ Completed</div>
+        {% endif %}
+
+        <h1 class="nb-lesson-heading">{{ lesson.content.heading }}</h1>
+
+        <div class="nb-prose" id="lessonBody"></div>
+
+        {% if lesson.content.examples %}
+        <div class="nb-examples">
+          {% for ex in lesson.content.examples %}
+          <div class="nb-example {{ ex.type }}">
+            <div class="nb-example-label">{{ ex.label }}</div>
+            <div class="nb-example-text">{{ ex.text }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if lesson.content.body2 %}
+        <div class="nb-prose" id="lessonBody2"></div>
+        {% endif %}
+
+        {% if lesson.content.note %}
+        <div class="nb-note">{{ lesson.content.note }}</div>
+        {% endif %}
+
+        {% if lesson.content.exercise %}
+        <div class="nb-exercise">
+          <div class="nb-exercise-head">⌨️ {{ lesson.content.exercise.title }}</div>
+          <div class="nb-exercise-body">
+            <div class="nb-exercise-desc">{{ lesson.content.exercise.description }}</div>
+
+            <div class="nb-editor-wrap">
+              <div class="nb-editor-bar">
+                <span class="nb-editor-label">your prompt</span>
+                <button class="nb-editor-clear" onclick="document.getElementById('promptInput').value=''">clear</button>
+              </div>
+              <textarea id="promptInput" class="nb-textarea" rows="4">{{ lesson.content.exercise.defaultPrompt }}</textarea>
+            </div>
+
+            <div class="nb-action-row">
+              <button id="runBtn" class="nb-run-btn" onclick="runPrompt()">▶ Run Prompt</button>
+              <button id="gradeBtn" class="nb-grade-btn" onclick="gradePrompt()">📊 Grade My Prompt</button>
+            </div>
+
+            <div id="resultArea"></div>
+            <div id="gradeArea"></div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="nb-lesson-nav">
+          {% if prev_lesson %}
+          <a href="/lesson/{{ prev_lesson.lesson.id }}" class="nb-nav-btn nb-nav-prev">← {{ prev_lesson.lesson.title }}</a>
+          {% else %}<div></div>{% endif %}
+
+          {% if not is_completed %}
+          <button onclick="completeLesson()" class="nb-nav-btn nb-nav-complete" id="completeBtn">Mark Complete ✓</button>
+          {% endif %}
+
+          {% if next_lesson %}
+          <a href="/lesson/{{ next_lesson.lesson.id }}" class="nb-nav-btn nb-nav-next">{{ next_lesson.lesson.title }} →</a>
+          {% else %}<div></div>{% endif %}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function renderBody(elId, text) {
+    const el = document.getElementById(elId);
+    if (!el || !text) return;
+    const paras = text.split('\n').filter(p => p.trim() !== '');
+    el.innerHTML = paras.map(p => {
+        const escaped = p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const bolded = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return `<p>${bolded}</p>`;
+    }).join('');
+}
+
+const lessonBodyText = {{ lesson.content.body | tojson }};
+renderBody('lessonBody', lessonBodyText);
+
+{% if lesson.content.body2 %}
+const lessonBody2Text = {{ lesson.content.body2 | tojson }};
+renderBody('lessonBody2', lessonBody2Text);
+{% endif %}
+
+const lessonId = "{{ lesson.id }}";
+const moduleId = "{{ module.id }}";
+
+const COMING_SOON_HTML = `
+    <div class="nb-coming-soon">
+        <div class="nb-coming-soon-icon">🚀</div>
+        <div class="nb-coming-soon-title">Coming Soon!</div>
+        <div class="nb-coming-soon-sub">Live AI feature will be available very soon. Stay tuned!</div>
+    </div>`;
+
+function setBtnLoading(btn, loading, normalHTML, loadingText, darkSpinner) {
+    if (loading) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-sm${darkSpinner ? ' dark' : ''}"></span> ${loadingText}`;
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = normalHTML;
+    }
+}
+
+async function runPrompt() {
+    const prompt = document.getElementById('promptInput').value.trim();
+    const btn = document.getElementById('runBtn');
+    const resultArea = document.getElementById('resultArea');
+    if (!prompt) return;
+
+    setBtnLoading(btn, true, '▶ Run Prompt', 'Running...', false);
+    resultArea.innerHTML = '';
+
+    try {
+        const res = await fetch('/api/lesson/run-prompt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        setBtnLoading(btn, false, '▶ Run Prompt', '', false);
+
+        if (data.coming_soon) {
+            resultArea.innerHTML = COMING_SOON_HTML;
+            return;
+        }
+
+        if (res.ok && data.success) {
+            resultArea.innerHTML = `
+                <div class="nb-result">
+                    <div class="nb-result-bar">🤖 AI response</div>
+                    <div class="nb-result-body">${escapeHtml(data.response)}</div>
+                    <div class="nb-result-success">✅ Try editing your prompt and running again to see how the answer changes.</div>
+                </div>`;
+        } else {
+            resultArea.innerHTML = `<div class="nb-note">⚠️ ${data.detail || 'Something went wrong. Try again.'}</div>`;
+        }
+    } catch (e) {
+        setBtnLoading(btn, false, '▶ Run Prompt', '', false);
+        resultArea.innerHTML = `<div class="nb-note">⚠️ Connection error. Try again.</div>`;
+    }
+}
+
+async function gradePrompt() {
+    const prompt = document.getElementById('promptInput').value.trim();
+    const btn = document.getElementById('gradeBtn');
+    const gradeArea = document.getElementById('gradeArea');
+    if (!prompt) return;
+
+    setBtnLoading(btn, true, '📊 Grade My Prompt', 'Grading...', true);
+    gradeArea.innerHTML = '';
+
+    try {
+        const res = await fetch('/api/lesson/grade-prompt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        setBtnLoading(btn, false, '📊 Grade My Prompt', '', true);
+
+        if (data.coming_soon) {
+            gradeArea.innerHTML = COMING_SOON_HTML;
+            return;
+        }
+
+        if (res.ok && data.success) {
+            const g = data.grade;
+            gradeArea.innerHTML = `
+                <div class="nb-grade-card">
+                    <div class="nb-grade-score-row">
+                        <div class="nb-grade-score">${g.score}/10</div>
+                        <div class="nb-grade-grade">Grade: ${g.grade}</div>
+                    </div>
+                    <div class="nb-grade-section">
+                        <div class="nb-grade-section-title">Strengths</div>
+                        <ul class="nb-grade-list">${g.strengths.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+                    </div>
+                    <div class="nb-grade-section">
+                        <div class="nb-grade-section-title">Improve</div>
+                        <ul class="nb-grade-list">${g.weaknesses.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+                    </div>
+                    <div class="nb-grade-section">
+                        <div class="nb-grade-section-title">Suggested Rewrite</div>
+                        <div class="nb-grade-improved">${escapeHtml(g.improved_prompt)}</div>
+                    </div>
+                </div>`;
+        } else {
+            gradeArea.innerHTML = `<div class="nb-note">⚠️ ${data.detail || 'Could not grade. Try again.'}</div>`;
+        }
+    } catch (e) {
+        setBtnLoading(btn, false, '📊 Grade My Prompt', '', true);
+        gradeArea.innerHTML = `<div class="nb-note">⚠️ Connection error. Try again.</div>`;
+    }
+}
+
+async function completeLesson() {
+    const btn = document.getElementById('completeBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+
+    try {
+        const res = await fetch('/api/lesson/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ lesson_id: lessonId, module_id: moduleId, xp_earned: 10 })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            window.location.reload();
+        }
+    } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Mark Complete ✓'; }
+    }
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+</script>
+{% endblock %}
