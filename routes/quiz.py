@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from jinja2 import Environment, FileSystemLoader
 from sqlalchemy.orm import Session
 import json
 
@@ -10,7 +11,10 @@ from schemas import QuizSubmit
 from dependencies import get_current_user
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+
+_env = Environment(loader=FileSystemLoader("templates"))
+_env.cache = None
+templates = Jinja2Templates(env=_env)
 
 
 def load_curriculum():
@@ -27,12 +31,7 @@ def find_lesson(curriculum, lesson_id):
 
 
 @router.get("/quiz/{lesson_id}", response_class=HTMLResponse)
-async def quiz_page(
-    lesson_id: str,
-    request: Request,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
+async def quiz_page(lesson_id: str, request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     curriculum = load_curriculum()
     lesson, module = find_lesson(curriculum, lesson_id)
 
@@ -44,22 +43,17 @@ async def quiz_page(
     if not quiz_questions:
         raise HTTPException(status_code=404, detail="No quiz available for this lesson!")
 
-    # Remove correct answers from frontend data (security)
-    safe_questions = [
-        {"question": q["question"], "options": q["options"]}
-        for q in quiz_questions
-    ]
+    safe_questions = [{"question": q["question"], "options": q["options"]} for q in quiz_questions]
 
-    # Check previous attempts
     previous_result = db.query(QuizResult).filter(
         QuizResult.user_id == user.id,
         QuizResult.quiz_id == lesson_id
     ).order_by(QuizResult.created_at.desc()).first()
 
     return templates.TemplateResponse(
-        "pages/quiz.html",
-        {
-            "request": request,
+        request=request,
+        name="pages/quiz.html",
+        context={
             "user": user,
             "lesson": lesson,
             "module": module,
@@ -71,11 +65,7 @@ async def quiz_page(
 
 
 @router.post("/api/quiz/submit")
-async def submit_quiz(
-    data: QuizSubmit,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
+async def submit_quiz(data: QuizSubmit, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     curriculum = load_curriculum()
     lesson, module = find_lesson(curriculum, data.quiz_id)
 
@@ -87,7 +77,6 @@ async def submit_quiz(
     if len(data.answers) != len(quiz_questions):
         raise HTTPException(status_code=400, detail="Answer count mismatch!")
 
-    # Calculate score
     score = 0
     results = []
     for i, question in enumerate(quiz_questions):
@@ -104,11 +93,9 @@ async def submit_quiz(
 
     total = len(quiz_questions)
     percent = int((score / total) * 100) if total else 0
-    passed = percent >= 60  # 60% to pass
-
+    passed = percent >= 60
     xp_earned = score * 10 if passed else score * 5
 
-    # Save result
     quiz_result = QuizResult(
         user_id=user.id,
         quiz_id=data.quiz_id,
@@ -119,10 +106,7 @@ async def submit_quiz(
         xp_earned=xp_earned
     )
     db.add(quiz_result)
-
-    # Award XP
     user.xp += xp_earned
-
     db.commit()
 
     return {

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from jinja2 import Environment, FileSystemLoader
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 
@@ -13,38 +14,36 @@ from services.jwt_service import create_token
 from config import settings
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+
+_env = Environment(loader=FileSystemLoader("templates"))
+_env.cache = None
+templates = Jinja2Templates(env=_env)
 
 
-# ── Pages ─────────────────────────────────────────────
 @router.get("/subscribe", response_class=HTMLResponse)
 async def subscribe_page(request: Request):
     return templates.TemplateResponse(
-        "auth/register.html",
-        {"request": request}
+        request=request,
+        name="auth/register.html",
+        context={}
     )
 
 
 @router.get("/verify-otp", response_class=HTMLResponse)
 async def otp_page(request: Request, phone: str = ""):
     return templates.TemplateResponse(
-        "auth/otp.html",
-        {"request": request, "phone": phone}
+        request=request,
+        name="auth/otp.html",
+        context={"phone": phone}
     )
 
 
-# ── API Endpoints ──────────────────────────────────────
 @router.post("/api/auth/request-otp")
-async def request_otp(
-    data: PhoneRequest,
-    db: Session = Depends(get_db)
-):
+async def request_otp(data: PhoneRequest, db: Session = Depends(get_db)):
     phone = data.phone
-
     result = await otp_service.request_otp(phone)
 
     if result["success"]:
-        # Find or create user
         user = db.query(User).filter(User.phone == phone).first()
         if not user:
             user = User(phone=phone)
@@ -52,7 +51,6 @@ async def request_otp(
             db.commit()
             db.refresh(user)
 
-        # Save OTP session
         otp_session = OTPSession(
             phone=phone,
             reference_no=result.get("reference_no"),
@@ -66,14 +64,9 @@ async def request_otp(
 
 
 @router.post("/api/auth/verify-otp")
-async def verify_otp(
-    data: OTPVerifyRequest,
-    response: Response,
-    db: Session = Depends(get_db)
-):
+async def verify_otp(data: OTPVerifyRequest, response: Response, db: Session = Depends(get_db)):
     phone = data.phone
 
-    # Get latest OTP session
     otp_session = db.query(OTPSession).filter(
         OTPSession.phone == phone,
         OTPSession.is_used == False
@@ -82,11 +75,9 @@ async def verify_otp(
     if not otp_session:
         raise HTTPException(status_code=400, detail="OTP session not found!")
 
-    # Check expiry
     if datetime.utcnow() > otp_session.expires_at:
         raise HTTPException(status_code=400, detail="OTP expired!")
 
-    # Verify OTP
     verify_result = await otp_service.verify_otp(
         phone=phone,
         otp=data.otp,
@@ -96,22 +87,16 @@ async def verify_otp(
     if not verify_result["success"]:
         raise HTTPException(status_code=400, detail="Invalid OTP!")
 
-    # Get user
     user = db.query(User).filter(User.phone == phone).first()
 
-    # Charge every time — daily access model
     charge_result = await payment_service.charge_user(
         phone=phone,
         reference_no=otp_session.reference_no
     )
 
     if not charge_result["success"]:
-        raise HTTPException(
-            status_code=402,
-            detail="Payment failed! Please ensure you have sufficient balance."
-        )
+        raise HTTPException(status_code=402, detail="Payment failed! Please ensure you have sufficient balance.")
 
-    # Save transaction
     txn = Transaction(
         phone=phone,
         amount=float(settings.CHARGE_AMOUNT),
@@ -122,7 +107,6 @@ async def verify_otp(
     )
     db.add(txn)
 
-    # Update streak
     if user.last_active:
         diff = datetime.utcnow() - user.last_active
         if diff.days == 1:
@@ -136,20 +120,17 @@ async def verify_otp(
     user.is_premium = True
     user.last_active = datetime.utcnow()
 
-    # Mark OTP as used
     otp_session.is_used = True
     db.commit()
     db.refresh(user)
 
-    # Create JWT token
     token = create_token(user.id, user.phone)
 
-    # Set cookie
     response.set_cookie(
         key="access_token",
         value=token,
         httponly=True,
-        max_age=86400,  # 24 hours
+        max_age=86400,
         samesite="lax"
     )
 
@@ -175,13 +156,8 @@ async def logout(response: Response):
 
 
 @router.post("/api/auth/update-name")
-async def update_name(
-    data: NameUpdateRequest,
-    request: Request,
-    db: Session = Depends(get_db)
-):
+async def update_name(data: NameUpdateRequest, request: Request, db: Session = Depends(get_db)):
     from services.jwt_service import get_user_id_from_token
-
     token = request.cookies.get("access_token")
     if not token:
         raise HTTPException(status_code=401, detail="Unauthorized!")
@@ -194,5 +170,4 @@ async def update_name(
 
     user.name = data.name
     db.commit()
-
     return {"success": True, "message": "Name updated!"}

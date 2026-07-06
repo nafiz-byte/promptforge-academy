@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from jinja2 import Environment, FileSystemLoader
 from sqlalchemy.orm import Session
 from datetime import datetime
 import json
@@ -12,7 +13,10 @@ from dependencies import get_current_user
 from services.ai_service import ai_service
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+
+_env = Environment(loader=FileSystemLoader("templates"))
+_env.cache = None
+templates = Jinja2Templates(env=_env)
 
 
 def load_curriculum():
@@ -32,21 +36,12 @@ def get_all_lessons_flat(curriculum):
     flat = []
     for module in curriculum["modules"]:
         for lesson in module["lessons"]:
-            flat.append({
-                "lesson": lesson,
-                "module_id": module["id"],
-                "module_title": module["title"]
-            })
+            flat.append({"lesson": lesson, "module_id": module["id"], "module_title": module["title"]})
     return flat
 
 
 @router.get("/lesson/{lesson_id}", response_class=HTMLResponse)
-async def lesson_page(
-    lesson_id: str,
-    request: Request,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
+async def lesson_page(lesson_id: str, request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     curriculum = load_curriculum()
     lesson, module = find_lesson(curriculum, lesson_id)
 
@@ -54,10 +49,7 @@ async def lesson_page(
         raise HTTPException(status_code=404, detail="Lesson not found!")
 
     flat_lessons = get_all_lessons_flat(curriculum)
-    current_index = next(
-        (i for i, item in enumerate(flat_lessons) if item["lesson"]["id"] == lesson_id),
-        -1
-    )
+    current_index = next((i for i, item in enumerate(flat_lessons) if item["lesson"]["id"] == lesson_id), -1)
 
     prev_lesson = flat_lessons[current_index - 1] if current_index > 0 else None
     next_lesson = flat_lessons[current_index + 1] if current_index < len(flat_lessons) - 1 else None
@@ -83,19 +75,15 @@ async def lesson_page(
             "title": mod["title"],
             "icon": mod["icon"],
             "lessons": [
-                {
-                    "id": l["id"],
-                    "title": l["title"],
-                    "completed": l["id"] in completed_ids
-                }
+                {"id": l["id"], "title": l["title"], "completed": l["id"] in completed_ids}
                 for l in mod["lessons"]
             ]
         })
 
     return templates.TemplateResponse(
-        "pages/lesson.html",
-        {
-            "request": request,
+        request=request,
+        name="pages/lesson.html",
+        context={
             "user": user,
             "lesson": lesson,
             "module": module,
@@ -109,11 +97,7 @@ async def lesson_page(
 
 
 @router.post("/api/lesson/run-prompt")
-async def run_prompt(
-    request: Request,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
+async def run_prompt(request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     body = await request.json()
     prompt = body.get("prompt", "")
 
@@ -132,11 +116,7 @@ async def run_prompt(
 
 
 @router.post("/api/lesson/grade-prompt")
-async def grade_prompt(
-    request: Request,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
+async def grade_prompt(request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     body = await request.json()
     prompt = body.get("prompt", "")
 
@@ -155,11 +135,7 @@ async def grade_prompt(
 
 
 @router.post("/api/lesson/complete")
-async def complete_lesson(
-    data: ProgressUpdate,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
+async def complete_lesson(data: ProgressUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     existing = db.query(Progress).filter(
         Progress.user_id == user.id,
         Progress.lesson_id == data.lesson_id
@@ -186,9 +162,4 @@ async def complete_lesson(
     user.xp += data.xp_earned
     db.commit()
 
-    return {
-        "success": True,
-        "message": "Lesson completed!",
-        "xp_earned": data.xp_earned,
-        "total_xp": user.xp
-    }
+    return {"success": True, "message": "Lesson completed!", "xp_earned": data.xp_earned, "total_xp": user.xp}
