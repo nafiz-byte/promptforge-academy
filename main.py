@@ -9,7 +9,7 @@ from database import engine, get_db, Base
 from config import settings
 from dependencies import get_current_user_optional
 
-from routes import auth, dashboard, lessons, quiz, leaderboard
+from routes import auth, dashboard, lessons, quiz, leaderboard, bdapps
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,6 +25,7 @@ app.include_router(dashboard.router)
 app.include_router(lessons.router)
 app.include_router(quiz.router)
 app.include_router(leaderboard.router)
+app.include_router(bdapps.router)
 
 
 @app.get("/", response_class=HTMLResponse)
